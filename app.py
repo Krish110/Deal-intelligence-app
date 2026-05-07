@@ -460,7 +460,7 @@ def upload_pdf_to_gemini(uploaded_file):
     gemini_file = genai.upload_file(tmp_path, mime_type="application/pdf")
     return gemini_file
 
-# ── Helper: Call Claude ───────────────────────────────────────
+# ── Helper: Call Gemini ───────────────────────────────────────
 def analyse_report(gemini_file, retailer_hint: str = "") -> dict:
     """Send uploaded PDF file + prompt to Gemini and parse JSON response."""
     genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
@@ -477,14 +477,20 @@ def analyse_report(gemini_file, retailer_hint: str = "") -> dict:
     response = model.generate_content(
         [gemini_file, user_prompt],
         generation_config=genai.GenerationConfig(
-            max_output_tokens=4000,
+            max_output_tokens=8192, # Doubled to prevent the response from being cut off
             temperature=0.2,
-            response_mime_type="application/json" # <--- Forces 100% valid JSON output
+            response_mime_type="application/json" # Forces valid JSON output
         )
     )
 
-    # Since response_mime_type guarantees JSON, we can just load it directly
-    return json.loads(response.text)
+    raw = response.text.strip()
+    
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError as e:
+        # If it fails again, this will print the EXACT raw text to your Streamlit screen 
+        # so you can see exactly where the AI messed up the formatting.
+        raise Exception(f"JSON Parsing Error: {e}\n\nRAW AI OUTPUT:\n{raw}")
 
 # ── Helper: Render verdict ────────────────────────────────────
 def render_verdict(data: dict):
