@@ -28,7 +28,7 @@ Upload a retailer's annual report → get a 12-point intelligence brief:
 5. Add your Anthropic API key in **Secrets**:
 
 ```toml
-GEMINI_API_KEY = "AIzaSyACJ_nIa23Tys1zfAFK88KlTMJu0gh6DPg"
+GEMINI_API_KEY = "GEMINI_API_KEY"
 ```
 
 ## Run locally
@@ -40,7 +40,7 @@ streamlit run app.py
 
 Set your API key:
 ```bash
-export GEMINI_API_KEY="AIzaSyACJ_nIa23Tys1zfAFK88KlTMJu0gh6DPg"
+export GEMINI_API_KEY="GEMINI_API_KEY"
 ```
 
 ## Built for
