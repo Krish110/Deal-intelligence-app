@@ -346,7 +346,7 @@ hr { border-color: var(--border) !important; margin: 2rem 0 !important; }
 # ── Hero ──────────────────────────────────────────────────────
 st.markdown("""
 <div class="hero">
-    <div class="hero-eyebrow">💎 Inter old · Mumbai · IGI Certified Lab-Grown Diamonds</div>
+    <div class="hero-eyebrow">💎 Inter Gold · Mumbai · IGI Certified Lab-Grown Diamonds</div>
     <div class="hero-title">Deal Intelligence Engine</div>
     <div class="hero-sub">
         Upload any retailer's annual report. Get a complete strategic brief —
