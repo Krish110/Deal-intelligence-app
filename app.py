@@ -451,13 +451,20 @@ Return a valid JSON object with exactly this structure. No text before or after 
 def upload_pdf_to_gemini(uploaded_file):
     """Upload PDF bytes to Gemini Files API and return the file object."""
     genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
-    uploaded_file.seek(0)
-    pdf_bytes = uploaded_file.read()
-    # Write to a temp file — Gemini Files API needs a file path
-    tmp_path = f"/tmp/{uploaded_file.name}"
+    
+    # Save safely to current directory
+    tmp_path = Path(uploaded_file.name).name
     with open(tmp_path, "wb") as f:
-        f.write(pdf_bytes)
+        f.write(uploaded_file.getbuffer())
+        
     gemini_file = genai.upload_file(tmp_path, mime_type="application/pdf")
+    
+    # Give Google's servers time to digest the PDF before we hit it
+    while gemini_file.state.name == 'PROCESSING':
+        time.sleep(2)
+        gemini_file = genai.get_file(gemini_file.name)
+        
+    os.remove(tmp_path) # Clean up local file
     return gemini_file
 
 # ── Helper: Call Claude ───────────────────────────────────────
@@ -465,7 +472,7 @@ def analyse_report(gemini_file, retailer_hint: str = "") -> dict:
     """Send uploaded PDF file + prompt to Gemini and parse JSON response."""
     genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 
-    # Define relaxed safety settings to prevent false-positive cutoffs
+    # Relax safety settings so it can discuss the ethics of the mined diamond industry
     safety_settings = [
         {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
         {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
@@ -474,15 +481,37 @@ def analyse_report(gemini_file, retailer_hint: str = "") -> dict:
     ]
 
     model = genai.GenerativeModel(
-        model_name="gemini-2.5-flash",
+        model_name="gemini-1.5-pro", # Google's primary model for heavy document analysis
         system_instruction=SYSTEM_PROMPT,
-        safety_settings=safety_settings  # <--- Added safety overrides
+        safety_settings=safety_settings
     )
 
     user_prompt = f"""Analyse this annual report and return the JSON intelligence brief.
 {f'Retailer context hint: {retailer_hint}' if retailer_hint else ''}"""
 
-    # ... (keep the rest of the generation call exactly as you have it) ...
+    response = model.generate_content(
+        [gemini_file, user_prompt],
+        generation_config=genai.GenerationConfig(
+            max_output_tokens=8192,
+            temperature=0.2,
+            response_mime_type="application/json"
+        )
+    )
+
+    raw = response.text.strip()
+    
+    # Strip markdown fences just in case JSON mode glitches and includes them
+    if raw.startswith("```"):
+        raw = raw.split("```")[1]
+        if raw.startswith("json"):
+            raw = raw[4:]
+    raw = raw.strip().rstrip("```").strip()
+    
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError as e:
+        raise Exception(f"JSON Parsing Error: {e}\n\nRAW AI OUTPUT:\n{raw}")
+
 # ── Helper: Render verdict ────────────────────────────────────
 def render_verdict(data: dict):
     verdict = data.get("verdict", "PROCEED WITH CAUTION")
@@ -841,6 +870,8 @@ if st.session_state.analysing and uploaded is not None:
             time.sleep(0.4)
 
         result = analyse_report(gemini_file, retailer_hint)
+        
+        # Save results and stop analysis flag
         st.session_state.analysis = result
         st.session_state.analysing = False
 
@@ -854,9 +885,6 @@ if st.session_state.analysing and uploaded is not None:
         status_container.empty()
         st.rerun()
 
-    except json.JSONDecodeError as e:
-        st.session_state.analysing = False
-        st.error(f"The AI returned an unexpected format. Please try again. ({e})")
     except Exception as e:
         st.session_state.analysing = False
         st.error(f"Analysis failed: {str(e)}")
