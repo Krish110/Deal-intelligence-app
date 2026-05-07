@@ -471,25 +471,20 @@ def analyse_report(gemini_file, retailer_hint: str = "") -> dict:
     )
 
     user_prompt = f"""Analyse this annual report and return the JSON intelligence brief.
-{f'Retailer context hint: {retailer_hint}' if retailer_hint else ''}
-Remember: return ONLY valid JSON, no text before or after."""
+{f'Retailer context hint: {retailer_hint}' if retailer_hint else ''}"""
 
+    # Generation call
     response = model.generate_content(
         [gemini_file, user_prompt],
         generation_config=genai.GenerationConfig(
             max_output_tokens=4000,
-            temperature=0.2
+            temperature=0.2,
+            response_mime_type="application/json" # <--- Forces 100% valid JSON output
         )
     )
 
-    raw = response.text.strip()
-    # Strip markdown fences if Gemini wraps in ```json ... ```
-    if raw.startswith("```"):
-        raw = raw.split("```")[1]
-        if raw.startswith("json"):
-            raw = raw[4:]
-    raw = raw.strip().rstrip("```").strip()
-    return json.loads(raw)
+    # Since response_mime_type guarantees JSON, we can just load it directly
+    return json.loads(response.text)
 
 # ── Helper: Render verdict ────────────────────────────────────
 def render_verdict(data: dict):
