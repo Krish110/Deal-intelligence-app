@@ -450,7 +450,7 @@ Return a valid JSON object with exactly this structure. No text before or after 
 # ── Helper: PDF to base64 ─────────────────────────────────────
 def upload_pdf_to_gemini(uploaded_file):
     """Upload PDF bytes to Gemini Files API and return the file object."""
-    genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
+    genai.configure(api_key=st.secrets["AIzaSyACJ_nIa23Tys1zfAFK88KlTMJu0gh6DPg"])
     uploaded_file.seek(0)
     pdf_bytes = uploaded_file.read()
     # Write to a temp file — Gemini Files API needs a file path
@@ -463,7 +463,7 @@ def upload_pdf_to_gemini(uploaded_file):
 # ── Helper: Call Claude ───────────────────────────────────────
 def analyse_report(gemini_file, retailer_hint: str = "") -> dict:
     """Send uploaded PDF file + prompt to Gemini and parse JSON response."""
-    genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
+    genai.configure(api_key=st.secrets["AIzaSyACJ_nIa23Tys1zfAFK88KlTMJu0gh6DPg"])
 
     model = genai.GenerativeModel(
         model_name="gemini-1.5-pro",
