@@ -356,6 +356,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ── System prompt ─────────────────────────────────────────────
+# 🛑 FIXED: The output schema is now 100% perfectly valid JSON. No pseudo-code.
 SYSTEM_PROMPT = """You are a senior B2B sales strategist and market intelligence analyst for DiamondCraft India — a Surat-based manufacturer of IGI-certified lab-grown diamond (LGD) jewellery. 
 
 YOUR COMPANY:
@@ -371,80 +372,68 @@ YOUR COMPANY:
 YOUR TASK:
 Analyse the uploaded annual report from a retailer's perspective and produce a structured deal intelligence brief. You must extract signals specifically relevant to whether this retailer should stock lab-grown diamond jewellery from DiamondCraft India.
 
-Look for:
-1. Jewellery/accessories category mentions — size, growth, strategy
-2. Sustainability commitments — ESG targets, ethical sourcing pledges
-3. Financial health — revenue trends, margin pressure, debt levels
-4. Geographic expansion — which markets they are entering or exiting
-5. Consumer insights — who their shopper is, what she buys, average basket
-6. Competitor mentions — do they reference Pandora, Swarovski, fine jewellery brands?
-7. Category gaps — what are they NOT doing that they should be?
-8. Strategic priorities — what are their 3-5 year ambitions?
-9. Supply chain signals — are they diversifying away from existing suppliers?
-10. Risk flags — financial distress, legal issues, market exit signals
-
 OUTPUT FORMAT:
-Return a valid JSON object with exactly this structure. No text before or after the JSON.
+Return a valid JSON object matching the exact keys and types shown below. Do not use pseudo-code in your output. Ensure all brackets and quotes are closed.
 
 {
   "company_name": "string",
   "report_year": "string",
-  "verdict": "GO" | "PROCEED WITH CAUTION" | "AVOID",
+  "verdict": "GO",
   "verdict_reason": "One powerful sentence explaining the verdict",
-  "confidence_score": number between 1-10,
-  "deal_potential": "HIGH" | "MEDIUM" | "LOW",
-  "estimated_year1_eur": "string e.g. €200,000 – €500,000",
-  "estimated_year3_eur": "string e.g. €800,000 – €2,000,000",
+  "confidence_score": 8,
+  "deal_potential": "HIGH",
+  "estimated_year1_eur": "€200,000 - €500,000",
+  "estimated_year3_eur": "€800,000 - €2,000,000",
   "jewellery_signals": {
-    "has_jewellery_category": true | false,
+    "has_jewellery_category": true,
     "jewellery_revenue_mentioned": "string or null",
-    "jewellery_growth_trend": "GROWING" | "STABLE" | "DECLINING" | "NOT MENTIONED",
-    "lgd_mentioned": true | false,
-    "competitor_brands_mentioned": ["string array of any jewellery brands mentioned"],
-    "key_quote": "Most relevant direct quote from the report about jewellery/accessories, or null"
+    "jewellery_growth_trend": "GROWING",
+    "lgd_mentioned": true,
+    "competitor_brands_mentioned": ["brand1", "brand2"],
+    "key_quote": "Most relevant quote here"
   },
   "esg_signals": {
-    "has_sustainability_commitments": true | false,
-    "esg_score": 1-10,
-    "relevant_commitments": ["array of ESG commitments relevant to LGD pitch"],
-    "lgd_esg_fit": "string explaining how LGD fits their ESG agenda"
+    "has_sustainability_commitments": true,
+    "esg_score": 8,
+    "relevant_commitments": ["commitment 1", "commitment 2"],
+    "lgd_esg_fit": "string explaining fit"
   },
   "financial_health": {
-    "revenue_trend": "GROWING" | "STABLE" | "DECLINING",
-    "margin_pressure": true | false,
-    "financial_risk_flags": ["array of any financial concerns"],
-    "counterparty_risk": "LOW" | "MEDIUM" | "HIGH"
+    "revenue_trend": "GROWING",
+    "margin_pressure": true,
+    "financial_risk_flags": ["risk 1"],
+    "counterparty_risk": "LOW"
   },
   "shopper_profile": {
     "primary_demographic": "string",
-    "avg_basket_size": "string or null",
-    "jewellery_buyer_insight": "string describing their jewellery buyer based on report"
+    "avg_basket_size": "string",
+    "jewellery_buyer_insight": "string"
   },
   "approach_strategy": {
-    "entry_point": "string — who to contact and how",
-    "opening_line": "string — the single best opening line for this specific retailer based on what you found in their report",
-    "pitch_angle": "string — primary angle to use",
-    "secondary_angle": "string — backup angle",
-    "timing": "string — when to approach based on their fiscal calendar/strategy cycle"
+    "entry_point": "string",
+    "opening_line": "string",
+    "pitch_angle": "string",
+    "secondary_angle": "string",
+    "timing": "string"
   },
   "cautions": [
     {
-      "flag": "string — short flag name",
-      "severity": "HIGH" | "MEDIUM" | "LOW",
-      "detail": "string — what to watch out for and why"
+      "flag": "string",
+      "severity": "HIGH",
+      "detail": "string"
     }
   ],
   "opportunities": [
     {
-      "opportunity": "string — short name",
-      "strength": "HIGH" | "MEDIUM" | "LOW",
-      "detail": "string — specific opportunity identified from the report"
+      "opportunity": "string",
+      "strength": "HIGH",
+      "detail": "string"
     }
   ],
-  "negotiation_leverage": ["array of specific points from their report you can use as leverage in negotiation"],
-  "deal_structure_recommendation": "string — recommended deal structure for this specific retailer",
-  "red_lines": ["array of things you must NOT say or do with this specific retailer"],
-  "first_meeting_agenda": ["array of 4-5 agenda points for the first buyer meeting, specific to this retailer"]
+  "negotiation_leverage": ["point 1", "point 2"],
+  "deal_structure_recommendation": "string",
+  "red_lines": ["line 1", "line 2"],
+  "first_meeting_agenda": ["point 1", "point 2"]
 }"""
 
 # ── Helper: PDF to base64 ─────────────────────────────────────
@@ -493,31 +482,12 @@ def analyse_report(gemini_file, retailer_hint: str = "") -> dict:
         [gemini_file, user_prompt],
         generation_config=genai.GenerationConfig(
             max_output_tokens=8192,
-            temperature=0.2
-            # 🛑 We removed response_mime_type="application/json" to stop the strict-parsing crashes
+            temperature=0.2,
+            response_mime_type="application/json" # 🛑 STRICT JSON MODE IS BACK ON
         )
     )
 
     raw = response.text.strip()
-    
-    # Strip markdown fences 
-    if raw.startswith("```"):
-        raw = raw.split("```")[1]
-        if raw.startswith("json"):
-            raw = raw[4:]
-    raw = raw.strip().rstrip("```").strip()
-    
-    try:
-        return json.loads(raw)
-    except json.JSONDecodeError as e:
-        raise Exception(f"JSON Parsing Error: {e}\n\nRAW AI OUTPUT:\n{raw}")
-    
-    # Strip markdown fences just in case JSON mode glitches and includes them
-    if raw.startswith("```"):
-        raw = raw.split("```")[1]
-        if raw.startswith("json"):
-            raw = raw[4:]
-    raw = raw.strip().rstrip("```").strip()
     
     try:
         return json.loads(raw)
