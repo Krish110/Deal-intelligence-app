@@ -346,7 +346,7 @@ hr { border-color: var(--border) !important; margin: 2rem 0 !important; }
 # ── Hero ──────────────────────────────────────────────────────
 st.markdown("""
 <div class="hero">
-    <div class="hero-eyebrow">💎 DiamondCraft India · Surat · IGI Certified Lab-Grown Diamonds</div>
+    <div class="hero-eyebrow">💎 Inter old · Mumbai · IGI Certified Lab-Grown Diamonds</div>
     <div class="hero-title">Deal Intelligence Engine</div>
     <div class="hero-sub">
         Upload any retailer's annual report. Get a complete strategic brief —
@@ -357,7 +357,7 @@ st.markdown("""
 
 # ── System prompt ─────────────────────────────────────────────
 # 🛑 FIXED: The output schema is now 100% perfectly valid JSON. No pseudo-code.
-SYSTEM_PROMPT = """You are a senior B2B sales strategist and market intelligence analyst for DiamondCraft India — a Surat-based manufacturer of IGI-certified lab-grown diamond (LGD) jewellery. 
+SYSTEM_PROMPT = """You are a senior B2B sales strategist and market intelligence analyst for Inter Gold — a Mumbai-based manufacturer of IGI-certified lab-grown diamond (LGD) jewellery. 
 
 YOUR COMPANY:
 - Inter Gold India, (world's diamond manufacturing capital)
@@ -370,7 +370,7 @@ YOUR COMPANY:
 - Key advantage: India-Australia ECTA (0% duty), UK-India FTA (imminent), EU-India FTA (pending)
 
 YOUR TASK:
-Analyse the uploaded annual report from a retailer's perspective and produce a structured deal intelligence brief. You must extract signals specifically relevant to whether this retailer should stock lab-grown diamond jewellery from DiamondCraft India.
+Analyse the uploaded annual report from a retailer's perspective and produce a structured deal intelligence brief. You must extract signals specifically relevant to whether this retailer should stock lab-grown diamond jewellery from Inter Gold.
 
 OUTPUT FORMAT:
 Return a valid JSON object matching the exact keys and types shown below. Do not use pseudo-code in your output. Ensure all brackets and quotes are closed.
@@ -750,8 +750,8 @@ def render_brief(data: dict):
     st.markdown("<br>", unsafe_allow_html=True)
     st.markdown(f"""
     <div style="text-align:center;padding:1.5rem;border-top:1px solid var(--border);margin-top:2rem">
-        <div style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--gold);margin-bottom:0.3rem">DiamondCraft India · Surat</div>
-        <div style="font-size:0.78rem;color:var(--gray)">IGI Certified Lab-Grown Diamond Jewellery · partnerships@diamondcraftindia.com</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--gold);margin-bottom:0.3rem">Inter Gold · Mumbai</div>
+        <div style="font-size:0.78rem;color:var(--gray)">IGI Certified Lab-Grown Diamond Jewellery ·</div>
     </div>
     """, unsafe_allow_html=True)
 
