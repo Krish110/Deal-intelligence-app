@@ -465,8 +465,8 @@ def analyse_report(gemini_file, retailer_hint: str = "") -> dict:
     """Send uploaded PDF file + prompt to Gemini and parse JSON response."""
     genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 
- model = genai.GenerativeModel(
-        model_name="gemini-2.5-flash", # <--- New active model
+    model = genai.GenerativeModel(
+        model_name="gemini-2.5-flash",
         system_instruction=SYSTEM_PROMPT
     )
 
