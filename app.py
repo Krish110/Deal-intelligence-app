@@ -481,7 +481,7 @@ def analyse_report(gemini_file, retailer_hint: str = "") -> dict:
     ]
 
     model = genai.GenerativeModel(
-        model_name="gemini-1.5-pro", # Google's primary model for heavy document analysis
+        model_name="gemini-2.5-flash", # Google's primary model for heavy document analysis
         system_instruction=SYSTEM_PROMPT,
         safety_settings=safety_settings
     )
