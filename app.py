@@ -460,38 +460,29 @@ def upload_pdf_to_gemini(uploaded_file):
     gemini_file = genai.upload_file(tmp_path, mime_type="application/pdf")
     return gemini_file
 
-# ── Helper: Call Gemini ───────────────────────────────────────
+# ── Helper: Call Claude ───────────────────────────────────────
 def analyse_report(gemini_file, retailer_hint: str = "") -> dict:
     """Send uploaded PDF file + prompt to Gemini and parse JSON response."""
     genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 
+    # Define relaxed safety settings to prevent false-positive cutoffs
+    safety_settings = [
+        {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
+        {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
+        {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE"},
+        {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"}
+    ]
+
     model = genai.GenerativeModel(
         model_name="gemini-2.5-flash",
-        system_instruction=SYSTEM_PROMPT
+        system_instruction=SYSTEM_PROMPT,
+        safety_settings=safety_settings  # <--- Added safety overrides
     )
 
     user_prompt = f"""Analyse this annual report and return the JSON intelligence brief.
 {f'Retailer context hint: {retailer_hint}' if retailer_hint else ''}"""
 
-    # Generation call
-    response = model.generate_content(
-        [gemini_file, user_prompt],
-        generation_config=genai.GenerationConfig(
-            max_output_tokens=8192, # Doubled to prevent the response from being cut off
-            temperature=0.2,
-            response_mime_type="application/json" # Forces valid JSON output
-        )
-    )
-
-    raw = response.text.strip()
-    
-    try:
-        return json.loads(raw)
-    except json.JSONDecodeError as e:
-        # If it fails again, this will print the EXACT raw text to your Streamlit screen 
-        # so you can see exactly where the AI messed up the formatting.
-        raise Exception(f"JSON Parsing Error: {e}\n\nRAW AI OUTPUT:\n{raw}")
-
+    # ... (keep the rest of the generation call exactly as you have it) ...
 # ── Helper: Render verdict ────────────────────────────────────
 def render_verdict(data: dict):
     verdict = data.get("verdict", "PROCEED WITH CAUTION")
