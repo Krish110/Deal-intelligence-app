@@ -862,7 +862,7 @@ try:
         status_container.empty()
         st.rerun()
 
-    except json.JSONDecodeError as e:
+except json.JSONDecodeError as e:
         st.session_state.analysing = False
         st.error(f"The AI returned an unexpected format. Please try again. ({e})")
     except Exception as e:
