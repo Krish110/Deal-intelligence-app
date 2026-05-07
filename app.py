@@ -481,7 +481,7 @@ def analyse_report(gemini_file, retailer_hint: str = "") -> dict:
     ]
 
     model = genai.GenerativeModel(
-        model_name="gemini-2.5-flash", # Google's primary model for heavy document analysis
+        model_name="gemini-1.5-flash", 
         system_instruction=SYSTEM_PROMPT,
         safety_settings=safety_settings
     )
@@ -493,12 +493,24 @@ def analyse_report(gemini_file, retailer_hint: str = "") -> dict:
         [gemini_file, user_prompt],
         generation_config=genai.GenerationConfig(
             max_output_tokens=8192,
-            temperature=0.2,
-            response_mime_type="application/json"
+            temperature=0.2
+            # 🛑 We removed response_mime_type="application/json" to stop the strict-parsing crashes
         )
     )
 
     raw = response.text.strip()
+    
+    # Strip markdown fences 
+    if raw.startswith("```"):
+        raw = raw.split("```")[1]
+        if raw.startswith("json"):
+            raw = raw[4:]
+    raw = raw.strip().rstrip("```").strip()
+    
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError as e:
+        raise Exception(f"JSON Parsing Error: {e}\n\nRAW AI OUTPUT:\n{raw}")
     
     # Strip markdown fences just in case JSON mode glitches and includes them
     if raw.startswith("```"):
