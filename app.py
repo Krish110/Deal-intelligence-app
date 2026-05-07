@@ -470,7 +470,7 @@ def analyse_report(gemini_file, retailer_hint: str = "") -> dict:
     ]
 
     model = genai.GenerativeModel(
-        model_name="gemini-2-flash", 
+        model_name="gemini-2.5-flash", 
         system_instruction=SYSTEM_PROMPT,
         safety_settings=safety_settings
     )
