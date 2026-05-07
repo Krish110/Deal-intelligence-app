@@ -837,8 +837,8 @@ if st.session_state.analysing and uploaded is not None:
         (0.95, "Compiling your deal intelligence brief..."),
     ]
 
-    try:
-       gemini_file = upload_pdf_to_gemini(uploaded)
+try:
+        gemini_file = upload_pdf_to_gemini(uploaded)
 
         for pct, msg in steps:
             progress_container.progress(pct)
