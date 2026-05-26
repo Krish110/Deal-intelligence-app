@@ -850,7 +850,7 @@ if not uploaded and not st.session_state.analysis:
     st.markdown("<hr>", unsafe_allow_html=True)
     st.markdown("""
     <div style="text-align:center;padding:3rem 1rem;color:var(--gray)">
-        <div style="font-size:3rem;margin-bottom:1rem">📋</div>
+        <div style="font-size:3rem;margin-bottom:1rem">&#128203;</div>
         <div style="font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--soft);margin-bottom:0.5rem">
             Upload an Annual Report to Begin
         </div>
