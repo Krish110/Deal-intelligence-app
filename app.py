@@ -490,13 +490,7 @@ def section(title: str):
     st.markdown(f'<div class="section-header">{title}</div>', unsafe_allow_html=True)
 
 def intel_card(label: str, title: str, body: str, accent: str = "#5225C1"):
-    st.markdown(f"""
-    <div class="intel-card" style="--accent-color:{accent}">
-        <div class="card-label">{label}</div>
-        <div class="card-title">{title}</div>
-        <div class="card-body">{body}</div>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown(f'<div class="intel-card" style="--accent-color:{accent}"><div class="card-label">{label}</div><div class="card-title">{title}</div><div class="card-body">{body}</div></div>', unsafe_allow_html=True)
 
 def pills(items: list, pill_class: str = "pill-blue"):
     if not items:
