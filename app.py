@@ -478,36 +478,12 @@ def render_verdict(data: dict):
     dp      = data.get("deal_potential", "MEDIUM")
 
     cls = {"GO": "verdict-go", "AVOID": "verdict-avoid"}.get(verdict, "verdict-caution")
-    icon = {"GO": "✅", "AVOID": "🚫"}.get(verdict, "⚠️")
+    icon = {"GO": "&#9989;", "AVOID": "&#128683;"}.get(verdict, "&#9888;")
     col  = {"GO": "#66FFAA", "AVOID": "#FF6666"}.get(verdict, "#FFD080")
 
-    st.markdown(f"""
-    <div class="{cls}">
-        <div class="verdict-title" style="color:{col}">{icon} &nbsp;{verdict}</div>
-        <div class="verdict-sub">{reason}</div>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown(f'<div class="{cls}"><div class="verdict-title" style="color:{col}">{icon} &nbsp;{verdict}</div><div class="verdict-sub">{reason}</div></div>', unsafe_allow_html=True)
 
-    st.markdown(f"""
-    <div class="metric-row">
-        <div class="metric-box">
-            <div class="metric-val">{conf}/10</div>
-            <div class="metric-lbl">Confidence Score</div>
-        </div>
-        <div class="metric-box">
-            <div class="metric-val">{dp}</div>
-            <div class="metric-lbl">Deal Potential</div>
-        </div>
-        <div class="metric-box">
-            <div class="metric-val" style="font-size:1.2rem">{y1}</div>
-            <div class="metric-lbl">Est. Year 1 Value</div>
-        </div>
-        <div class="metric-box">
-            <div class="metric-val" style="font-size:1.2rem">{y3}</div>
-            <div class="metric-lbl">Est. Year 3 Value</div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown(f'<div class="metric-row"><div class="metric-box"><div class="metric-val">{conf}/10</div><div class="metric-lbl">Confidence Score</div></div><div class="metric-box"><div class="metric-val">{dp}</div><div class="metric-lbl">Deal Potential</div></div><div class="metric-box"><div class="metric-val" style="font-size:1.2rem">{y1}</div><div class="metric-lbl">Est. Year 1 Value</div></div><div class="metric-box"><div class="metric-val" style="font-size:1.2rem">{y3}</div><div class="metric-lbl">Est. Year 3 Value</div></div></div>', unsafe_allow_html=True)
 
 # ── Helper: Render section ────────────────────────────────────
 def section(title: str):
