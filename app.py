@@ -710,12 +710,12 @@ def render_brief(data: dict):
             </div>
             """, unsafe_allow_html=True)
 
-    # ── Footer ──
+# ── Footer ──
     st.markdown("<br>", unsafe_allow_html=True)
     st.markdown(f"""
     <div style="text-align:center;padding:1.5rem;border-top:1px solid var(--border);margin-top:2rem">
         <div style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--gold);margin-bottom:0.3rem">Deal Intelligence Engine</div>
-        <div style="font-size:0.78rem;color:var(--gray)">Powered by Gemini AI · B2B Strategy & Market Intelligence</div>
+        <div style="font-size:0.78rem;color:var(--gray)">Powered by Gemini AI &middot; B2B Strategy &amp; Market Intelligence</div>
     </div>
     """, unsafe_allow_html=True)
 
