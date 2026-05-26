@@ -485,36 +485,20 @@ def render_verdict(data: dict):
 
     st.markdown(f'<div class="metric-row"><div class="metric-box"><div class="metric-val">{conf}/10</div><div class="metric-lbl">Confidence Score</div></div><div class="metric-box"><div class="metric-val">{dp}</div><div class="metric-lbl">Deal Potential</div></div><div class="metric-box"><div class="metric-val" style="font-size:1.2rem">{y1}</div><div class="metric-lbl">Est. Year 1 Value</div></div><div class="metric-box"><div class="metric-val" style="font-size:1.2rem">{y3}</div><div class="metric-lbl">Est. Year 3 Value</div></div></div>', unsafe_allow_html=True)
 
-# ── Helper: Render section ────────────────────────────────────
-def section(title: str):
-    st.markdown(f'<div class="section-header">{title}</div>', unsafe_allow_html=True)
-
-def intel_card(label: str, title: str, body: str, accent: str = "#5225C1"):
-    st.markdown(f'<div class="intel-card" style="--accent-color:{accent}"><div class="card-label">{label}</div><div class="card-title">{title}</div><div class="card-body">{body}</div></div>', unsafe_allow_html=True)
-
-def pills(items: list, pill_class: str = "pill-blue"):
-    if not items:
-        return
-    html = '<div class="pill-row">'
-    for item in items:
-        html += f'<span class="pill {pill_class}">{item}</span>'
-    html += '</div>'
-    st.markdown(html, unsafe_allow_html=True)
-
 # ── Helper: Render full brief ─────────────────────────────────
 def render_brief(data: dict):
     company = data.get("company_name", "Target Company")
     year    = data.get("report_year", "")
 
-    st.markdown(f"<h2 style='font-family:Playfair Display,serif;color:var(--lgold);margin-bottom:0.2rem'>{company} · {year}</h2>", unsafe_allow_html=True)
-    st.markdown(f"<p style='color:var(--gray);font-size:0.85rem;margin-bottom:1.5rem'>Strategic Deal Analysis & Intelligence Brief</p>", unsafe_allow_html=True)
+    st.markdown(f"<h2 style='font-family:Playfair Display,serif;color:var(--lgold);margin-bottom:0.2rem'>{company} &middot; {year}</h2>", unsafe_allow_html=True)
+    st.markdown("<p style='color:var(--gray);font-size:0.85rem;margin-bottom:1.5rem'>Strategic Deal Analysis &amp; Intelligence Brief</p>", unsafe_allow_html=True)
 
     # ── 1. VERDICT ──
-    section("01 · Deal Verdict")
+    section("01 &middot; Deal Verdict")
     render_verdict(data)
 
     # ── 2. CATEGORY SIGNALS ──
-    section("02 · Product & Category Signals")
+    section("02 &middot; Product &amp; Category Signals")
     cs = data.get("category_signals", {})
     col1, col2 = st.columns(2)
     with col1:
@@ -522,55 +506,47 @@ def render_brief(data: dict):
         prod_ment = cs.get("product_mentioned", False)
         trend = cs.get("category_growth_trend", "NOT MENTIONED")
         trend_color = {"GROWING":"#66FFAA","STABLE":"#FFD080","DECLINING":"#FF6666","NOT MENTIONED":"#888888"}.get(trend,"#888888")
-        intel_card(
-            "MARKET CATEGORY",
-            "Category Match Found" if has_cat else "No Direct Category Found",
-            f"Relevant Category: {'<span style=\"color:#66FFAA\">✓ Present</span>' if has_cat else '<span style=\"color:#FF6666\">✗ Not found</span>'}<br>"
-            f"Specific Product Mentioned: {'<span style=\"color:#66FFAA\">✓ Yes</span>' if prod_ment else '<span style=\"color:#888\">No</span>'}<br>"
-            f"Growth Trend: <span style=\"color:{trend_color}\">{trend}</span><br>"
-            f"Revenue: {cs.get('category_revenue_mentioned') or 'Not disclosed'}",
-            "#C8961E"
-        )
+        
+        # Build string safely outside of the f-string
+        cat_text = '<span style="color:#66FFAA">&#10003; Present</span>' if has_cat else '<span style="color:#FF6666">&#10007; Not found</span>'
+        prod_text = '<span style="color:#66FFAA">&#10003; Yes</span>' if prod_ment else '<span style="color:#888">No</span>'
+        rev_text = cs.get('category_revenue_mentioned') or 'Not disclosed'
+        
+        body_html = f"Relevant Category: {cat_text}<br>Specific Product Mentioned: {prod_text}<br>Growth Trend: <span style='color:{trend_color}'>{trend}</span><br>Revenue: {rev_text}"
+        
+        intel_card("MARKET CATEGORY", "Category Match Found" if has_cat else "No Direct Category Found", body_html, "#C8961E")
+        
     with col2:
         competitors = cs.get("competitor_brands_mentioned", [])
-        intel_card(
-            "COMPETITOR INTELLIGENCE",
-            "Ecosystem Brands Identified",
-            f"Brands mentioned in report:<br>" + (", ".join(f"<span style='color:var(--lgold)'>{c}</span>" for c in competitors) if competitors else "<span style='color:var(--gray)'>None identified</span>"),
-            "#9272E0"
-        )
+        comp_html = "Brands mentioned in report:<br>"
+        if competitors:
+            comp_html += ", ".join(f"<span style='color:var(--lgold)'>{c}</span>" for c in competitors)
+        else:
+            comp_html += "<span style='color:var(--gray)'>None identified</span>"
+            
+        intel_card("COMPETITOR INTELLIGENCE", "Ecosystem Brands Identified", comp_html, "#9272E0")
 
     quote = cs.get("key_quote")
     if quote:
-        st.markdown(f'<div class="quote-block">"{quote}"</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="quote-block">&quot;{quote}&quot;</div>', unsafe_allow_html=True)
 
     # ── 3. ESG SIGNALS ──
-    section("03 · ESG & Sustainability Fit")
+    section("03 &middot; ESG &amp; Sustainability Fit")
     esg = data.get("esg_signals", {})
     esg_score = esg.get("esg_score", 5)
     bar_color = "#66FFAA" if esg_score >= 7 else ("#FFD080" if esg_score >= 4 else "#FF6666")
     commitments = esg.get("relevant_commitments", [])
     prod_fit = esg.get("product_esg_fit", "")
-
-    st.markdown(f"""
-    <div class="intel-card" style="--accent-color:{bar_color}">
-        <div class="card-label">ESG ALIGNMENT SCORE</div>
-        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
-            <div style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:700;color:{bar_color}">{esg_score}/10</div>
-            <div style="flex:1;background:var(--border);border-radius:4px;height:8px">
-                <div style="width:{esg_score*10}%;background:{bar_color};height:8px;border-radius:4px;transition:width 1s"></div>
-            </div>
-        </div>
-        <div class="card-body">{prod_fit}</div>
-    </div>
-    """, unsafe_allow_html=True)
+    
+    esg_html = f'<div class="intel-card" style="--accent-color:{bar_color}"><div class="card-label">ESG ALIGNMENT SCORE</div><div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem"><div style="font-family:\'Playfair Display\',serif;font-size:2.5rem;font-weight:700;color:{bar_color}">{esg_score}/10</div><div style="flex:1;background:var(--border);border-radius:4px;height:8px"><div style="width:{esg_score*10}%;background:{bar_color};height:8px;border-radius:4px;transition:width 1s"></div></div></div><div class="card-body">{prod_fit}</div></div>'
+    st.markdown(esg_html, unsafe_allow_html=True)
 
     if commitments:
         st.markdown("<p style='color:var(--gray);font-size:0.82rem;margin:0.5rem 0 0.3rem'>Relevant ESG commitments:</p>", unsafe_allow_html=True)
         pills(commitments, "pill-green")
 
     # ── 4. FINANCIAL HEALTH ──
-    section("04 · Financial Health & Counterparty Risk")
+    section("04 &middot; Financial Health &amp; Counterparty Risk")
     fin = data.get("financial_health", {})
     rev_trend = fin.get("revenue_trend", "STABLE")
     risk = fin.get("counterparty_risk", "MEDIUM")
@@ -589,106 +565,74 @@ def render_brief(data: dict):
         pills(flags, "pill-red")
 
     # ── 5. SHOPPER PROFILE ──
-    section("05 · Target Demographics")
+    section("05 &middot; Target Demographics")
     sp = data.get("shopper_profile", {})
-    intel_card(
-        "CUSTOMER INTELLIGENCE",
-        sp.get("primary_demographic", "Not specified"),
-        f"Average basket size: {sp.get('avg_basket_size') or 'Not disclosed'}<br><br>"
-        f"{sp.get('target_buyer_insight', 'No specific customer insight available from report.')}",
-        "#5225C1"
-    )
+    basket = sp.get('avg_basket_size') or 'Not disclosed'
+    insight = sp.get('target_buyer_insight', 'No specific customer insight available from report.')
+    sp_body = f"Average basket size: {basket}<br><br>{insight}"
+    intel_card("CUSTOMER INTELLIGENCE", sp.get("primary_demographic", "Not specified"), sp_body, "#5225C1")
 
     # ── 6. APPROACH STRATEGY ──
-    section("06 · Your Approach Strategy")
+    section("06 &middot; Your Approach Strategy")
     ap = data.get("approach_strategy", {})
-
-    st.markdown(f'<div class="quote-block">{ap.get("opening_line", "")}</div>', unsafe_allow_html=True)
+    opening = ap.get("opening_line", "")
+    st.markdown(f'<div class="quote-block">{opening}</div>', unsafe_allow_html=True)
 
     col1, col2 = st.columns(2)
+    p_angle = ap.get("pitch_angle", "")
+    s_angle = ap.get("secondary_angle", "")
     with col1:
-        intel_card("PRIMARY PITCH ANGLE", ap.get("pitch_angle", "")[:60]+"...", ap.get("pitch_angle", ""), "#C8961E")
+        intel_card("PRIMARY PITCH ANGLE", p_angle[:60]+"...", p_angle, "#C8961E")
     with col2:
-        intel_card("SECONDARY ANGLE", ap.get("secondary_angle", "")[:60]+"...", ap.get("secondary_angle", ""), "#9272E0")
+        intel_card("SECONDARY ANGLE", s_angle[:60]+"...", s_angle, "#9272E0")
 
     intel_card("WHO TO CONTACT & WHEN", ap.get("entry_point", ""), ap.get("timing", ""), "#5225C1")
 
     # ── 7. OPPORTUNITIES ──
-    section("07 · Opportunities Identified")
+    section("07 &middot; Opportunities Identified")
     opps = data.get("opportunities", [])
     for opp in opps:
         strength = opp.get("strength", "MEDIUM")
         scol = {"HIGH":"#C8961E","MEDIUM":"#9272E0","LOW":"#888888"}.get(strength,"#9272E0")
-        intel_card(
-            f"OPPORTUNITY · {strength} STRENGTH",
-            opp.get("opportunity", ""),
-            opp.get("detail", ""),
-            scol
-        )
+        intel_card(f"OPPORTUNITY &middot; {strength} STRENGTH", opp.get("opportunity", ""), opp.get("detail", ""), scol)
 
     # ── 8. CAUTIONS ──
-    section("08 · Cautions & Red Flags")
+    section("08 &middot; Cautions &amp; Red Flags")
     cautions = data.get("cautions", [])
     for c in cautions:
         sev = c.get("severity", "MEDIUM")
         scol = {"HIGH":"#CC2222","MEDIUM":"#C8761E","LOW":"#888888"}.get(sev,"#C8761E")
-        flag_icon = {"HIGH":"🔴","MEDIUM":"🟡","LOW":"⚪"}.get(sev,"🟡")
-        intel_card(
-            f"{flag_icon} {sev} SEVERITY",
-            c.get("flag", ""),
-            c.get("detail", ""),
-            scol
-        )
-# ── 9. NEGOTIATION LEVERAGE ──
-    section("09 · Your Negotiation Leverage")
+        flag_icon = {"HIGH":"&#128308;","MEDIUM":"&#128993;","LOW":"&#9898;"}.get(sev,"&#128993;")
+        intel_card(f"{flag_icon} {sev} SEVERITY", c.get("flag", ""), c.get("detail", ""), scol)
+
+    # ── 9. NEGOTIATION LEVERAGE ──
+    section("09 &middot; Your Negotiation Leverage")
     leverage = data.get("negotiation_leverage", [])
     if leverage:
         for i, point in enumerate(leverage, 1):
-            st.markdown(f"""
-            <div style="display:flex;gap:1rem;margin-bottom:0.8rem;align-items:flex-start">
-                <div style="background:var(--gold);color:var(--ink);font-family:'Playfair Display',serif;font-weight:700;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.85rem">{i}</div>
-                <div style="font-size:0.93rem;color:var(--lgray);line-height:1.7;padding-top:3px">{point}</div>
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown(f'<div style="display:flex;gap:1rem;margin-bottom:0.8rem;align-items:flex-start"><div style="background:var(--gold);color:var(--ink);font-family:\'Playfair Display\',serif;font-weight:700;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.85rem">{i}</div><div style="font-size:0.93rem;color:var(--lgray);line-height:1.7;padding-top:3px">{point}</div></div>', unsafe_allow_html=True)
 
-# ── 10. RED LINES ──
-    section("10 · What NOT to Say or Do")
+    # ── 10. RED LINES ──
+    section("10 &middot; What NOT to Say or Do")
     red_lines = data.get("red_lines", [])
     if red_lines:
         for rl in red_lines:
-            st.markdown(f"""
-            <div style="display:flex;gap:0.8rem;margin-bottom:0.6rem;align-items:flex-start"><span style="color:#FF4444;font-size:1.2rem;flex-shrink:0">&#10007;</span><div style="font-size:0.92rem;color:var(--lgray);line-height:1.7">{rl}</div></div>
-            """, unsafe_allow_html=True)
+            st.markdown(f'<div style="display:flex;gap:0.8rem;margin-bottom:0.6rem;align-items:flex-start"><span style="color:#FF4444;font-size:1.2rem;flex-shrink:0">&#10007;</span><div style="font-size:0.92rem;color:var(--lgray);line-height:1.7">{rl}</div></div>', unsafe_allow_html=True)
 
     # ── 11. DEAL STRUCTURE ──
-    section("11 · Recommended Deal Structure")
-    intel_card(
-        "DEAL RECOMMENDATION",
-        "How to structure this partnership",
-        data.get("deal_structure_recommendation", ""),
-        "#C8961E"
-    )
+    section("11 &middot; Recommended Deal Structure")
+    intel_card("DEAL RECOMMENDATION", "How to structure this partnership", data.get("deal_structure_recommendation", ""), "#C8961E")
 
     # ── 12. FIRST MEETING AGENDA ──
-    section("12 · First Buyer Meeting Agenda")
+    section("12 &middot; First Buyer Meeting Agenda")
     agenda = data.get("first_meeting_agenda", [])
     if agenda:
         for i, item in enumerate(agenda, 1):
-            st.markdown(f"""
-            <div style="display:flex;gap:1rem;margin-bottom:0.8rem;align-items:flex-start">
-                <div style="background:var(--violet);color:var(--white);font-family:'Playfair Display',serif;font-weight:700;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.88rem">{i}</div>
-                <div style="font-size:0.93rem;color:var(--lgray);line-height:1.7;padding-top:4px">{item}</div>
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown(f'<div style="display:flex;gap:1rem;margin-bottom:0.8rem;align-items:flex-start"><div style="background:var(--violet);color:var(--white);font-family:\'Playfair Display\',serif;font-weight:700;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.88rem">{i}</div><div style="font-size:0.93rem;color:var(--lgray);line-height:1.7;padding-top:4px">{item}</div></div>', unsafe_allow_html=True)
 
-# ── Footer ──
+    # ── Footer ──
     st.markdown("<br>", unsafe_allow_html=True)
-    st.markdown(f"""
-    <div style="text-align:center;padding:1.5rem;border-top:1px solid var(--border);margin-top:2rem">
-        <div style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--gold);margin-bottom:0.3rem">Deal Intelligence Engine</div>
-        <div style="font-size:0.78rem;color:var(--gray)">Powered by Gemini AI &middot; B2B Strategy &amp; Market Intelligence</div>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown('<div style="text-align:center;padding:1.5rem;border-top:1px solid var(--border);margin-top:2rem"><div style="font-family:\'Playfair Display\',serif;font-size:1rem;color:var(--gold);margin-bottom:0.3rem">Deal Intelligence Engine</div><div style="font-size:0.78rem;color:var(--gray)">Powered by Gemini AI &middot; B2B Strategy &amp; Market Intelligence</div></div>', unsafe_allow_html=True)
 
 
 # ══════════════════════════════════════════════════════════════
