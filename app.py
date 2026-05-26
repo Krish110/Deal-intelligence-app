@@ -48,7 +48,7 @@ html, body, [class*="css"] {
 .stApp { background-color: var(--ink) !important; }
 
 /* ── Hide default streamlit elements ── */
-#MainMenu, footer, header { visibility: hidden; }
+#MainMenu, footer, { visibility: hidden; }
 .block-container { padding: 0 2rem 3rem 2rem !important; max-width: 1400px !important; }
 
 /* ── Hero ── */
