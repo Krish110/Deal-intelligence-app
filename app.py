@@ -442,11 +442,11 @@ def analyse_report(gemini_file, company, product, value_prop, goal, hint: str = 
 
     dynamic_prompt = get_system_prompt(company, product, value_prop, goal)
 
-model = genai.GenerativeModel(
+    model = genai.GenerativeModel(
         model_name="gemini-2.5-flash", 
         system_instruction=dynamic_prompt,
         safety_settings=safety_settings
-    ) # <--- MAKE SURE THIS CLOSING PARENTHESIS IS HERE
+    )
 
     user_prompt = f"""Analyse this annual report and return the JSON intelligence brief.
 {f'Target company context hint: {hint}' if hint else ''}"""
@@ -465,7 +465,7 @@ model = genai.GenerativeModel(
     try:
         return json.loads(raw)
     except json.JSONDecodeError as e:
-        raise Exception(f"JSON Parsing Error: {e}\n\nRAW AI OUTPUT:\n{raw}") 
+        raise Exception(f"JSON Parsing Error: {e}\n\nRAW AI OUTPUT:\n{raw}")
 
 # ── Helper: Render verdict ────────────────────────────────────
 def render_verdict(data: dict):
