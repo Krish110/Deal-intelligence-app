@@ -351,66 +351,66 @@ Produce a structured deal intelligence brief. You must extract signals specifica
 OUTPUT FORMAT:
 Return a valid JSON object matching the exact keys and types shown below. Do not use pseudo-code in your output. Ensure all brackets and quotes are closed perfectly.
 
-{{
+{
   "company_name": "string",
   "report_year": "string",
   "verdict": "GO",
-  "verdict_reason": "One powerful sentence explaining the verdict based on your product fit",
+  "verdict_reason": "string",
   "confidence_score": 8,
   "deal_potential": "HIGH",
-  "estimated_year1_usd": "$200,000 - $500,000",
-  "estimated_year3_usd": "$800,000 - $2,000,000",
-  "category_signals": {{
+  "estimated_year1_usd": "string",
+  "estimated_year3_usd": "string",
+  "category_signals": {
     "has_relevant_category": true,
-    "category_revenue_mentioned": "string or null",
-    "category_growth_trend": "GROWING",
+    "category_revenue_mentioned": "string",
+    "category_growth_trend": "string",
     "product_mentioned": true,
-    "competitor_brands_mentioned": ["brand1", "brand2"],
-    "key_quote": "Most relevant quote related to your product category"
-  }},
-  "esg_signals": {{
+    "competitor_brands_mentioned": ["string"],
+    "key_quote": "string"
+  },
+  "esg_signals": {
     "has_sustainability_commitments": true,
     "esg_score": 8,
-    "relevant_commitments": ["commitment 1", "commitment 2"],
-    "product_esg_fit": "string explaining how your product aligns with their ESG agenda"
-  }},
-  "financial_health": {{
-    "revenue_trend": "GROWING",
+    "relevant_commitments": ["string"],
+    "product_esg_fit": "string"
+  },
+  "financial_health": {
+    "revenue_trend": "string",
     "margin_pressure": true,
-    "financial_risk_flags": ["risk 1"],
-    "counterparty_risk": "LOW"
-  }},
-  "shopper_profile": {{
+    "financial_risk_flags": ["string"],
+    "counterparty_risk": "string"
+  },
+  "shopper_profile": {
     "primary_demographic": "string",
     "avg_basket_size": "string",
-    "target_buyer_insight": "string describing their customer base"
-  }},
-  "approach_strategy": {{
-    "entry_point": "string (who to contact)",
-    "opening_line": "string (custom opening line)",
+    "target_buyer_insight": "string"
+  },
+  "approach_strategy": {
+    "entry_point": "string",
+    "opening_line": "string",
     "pitch_angle": "string",
     "secondary_angle": "string",
     "timing": "string"
-  }},
+  },
   "cautions": [
-    {{
+    {
       "flag": "string",
       "severity": "HIGH",
       "detail": "string"
-    }}
+    }
   ],
   "opportunities": [
-    {{
+    {
       "opportunity": "string",
       "strength": "HIGH",
       "detail": "string"
-    }}
+    }
   ],
-  "negotiation_leverage": ["point 1", "point 2"],
+  "negotiation_leverage": ["string"],
   "deal_structure_recommendation": "string",
-  "red_lines": ["line 1", "line 2"],
-  "first_meeting_agenda": ["point 1", "point 2"]
-}}"""
+  "red_lines": ["string"],
+  "first_meeting_agenda": ["string"]
+}
 
 # ── Helper: PDF to base64 ─────────────────────────────────────
 def upload_pdf_to_gemini(uploaded_file):
