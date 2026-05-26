@@ -442,11 +442,11 @@ def analyse_report(gemini_file, company, product, value_prop, goal, hint: str = 
 
     dynamic_prompt = get_system_prompt(company, product, value_prop, goal)
 
-    model = genai.GenerativeModel(
+model = genai.GenerativeModel(
         model_name="gemini-2.5-flash", 
         system_instruction=dynamic_prompt,
         safety_settings=safety_settings
-    )
+    ) # <--- MAKE SURE THIS CLOSING PARENTHESIS IS HERE
 
     user_prompt = f"""Analyse this annual report and return the JSON intelligence brief.
 {f'Target company context hint: {hint}' if hint else ''}"""
