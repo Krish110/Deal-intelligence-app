@@ -8,9 +8,9 @@ from pathlib import Path
 # ── Page config ───────────────────────────────────────────────
 st.set_page_config(
     page_title="B2B Deal Intelligence Engine",
-    page_icon="📊",
+    page_icon="&#128202;", 
     layout="wide",
-    initial_sidebar_state="expanded" # Changed to expanded so users see the config
+    initial_sidebar_state="expanded"
 )
 
 # ── Custom CSS ────────────────────────────────────────────────
@@ -18,7 +18,6 @@ st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap');
 
-/* ── Root variables ── */
 :root {
     --ink:     #07070D;
     --deep:    #0F0C1F;
@@ -38,7 +37,6 @@ st.markdown("""
     --amber:   #C8761E;
 }
 
-/* ── Global reset ── */
 html, body, [class*="css"] {
     font-family: 'DM Sans', sans-serif;
     background-color: var(--ink) !important;
@@ -47,11 +45,10 @@ html, body, [class*="css"] {
 
 .stApp { background-color: var(--ink) !important; }
 
-/* ── Hide default streamlit elements ── */
-#MainMenu, footer, { visibility: hidden; }
+/* ── Hide default streamlit elements (kept header visible for sidebar toggle) ── */
+#MainMenu, footer { visibility: hidden; }
 .block-container { padding: 0 2rem 3rem 2rem !important; max-width: 1400px !important; }
 
-/* ── Hero ── */
 .hero {
     background: linear-gradient(135deg, var(--deep) 0%, var(--rich) 50%, var(--deep) 100%);
     border-bottom: 1px solid var(--border);
@@ -104,194 +101,42 @@ html, body, [class*="css"] {
     line-height: 1.6;
 }
 
-/* ── Upload zone ── */
-.upload-zone {
-    background: var(--deep);
-    border: 2px dashed var(--border);
-    border-radius: 16px;
-    padding: 2.5rem;
-    text-align: center;
-    transition: border-color 0.3s;
-    margin-bottom: 1.5rem;
-}
+.upload-zone { background: var(--deep); border: 2px dashed var(--border); border-radius: 16px; padding: 2.5rem; text-align: center; transition: border-color 0.3s; margin-bottom: 1.5rem; }
 .upload-zone:hover { border-color: var(--violet); }
 
-/* ── Cards ── */
-.intel-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 1.6rem;
-    margin-bottom: 1.2rem;
-    position: relative;
-    overflow: hidden;
-}
-.intel-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0;
-    width: 4px; height: 100%;
-    background: var(--accent-color, var(--violet));
-    border-radius: 4px 0 0 4px;
-}
-.card-label {
-    font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--gray);
-    margin-bottom: 0.6rem;
-    font-family: 'DM Sans', sans-serif;
-}
-.card-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--white);
-    margin-bottom: 0.8rem;
-}
-.card-body {
-    font-size: 0.92rem;
-    color: var(--lgray);
-    line-height: 1.75;
-}
+.intel-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 1.6rem; margin-bottom: 1.2rem; position: relative; overflow: hidden; }
+.intel-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--accent-color, var(--violet)); border-radius: 4px 0 0 4px; }
+.card-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gray); margin-bottom: 0.6rem; font-family: 'DM Sans', sans-serif; }
+.card-title { font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 700; color: var(--white); margin-bottom: 0.8rem; }
+.card-body { font-size: 0.92rem; color: var(--lgray); line-height: 1.75; }
 
-/* ── Verdict banner ── */
-.verdict-go {
-    background: linear-gradient(135deg, #0A2A1A 0%, #0F3D25 100%);
-    border: 1px solid var(--green);
-    border-radius: 14px;
-    padding: 1.8rem 2rem;
-    margin-bottom: 1.5rem;
-}
-.verdict-caution {
-    background: linear-gradient(135deg, #2A1A00 0%, #3D2800 100%);
-    border: 1px solid var(--amber);
-    border-radius: 14px;
-    padding: 1.8rem 2rem;
-    margin-bottom: 1.5rem;
-}
-.verdict-avoid {
-    background: linear-gradient(135deg, #2A0A0A 0%, #3D1010 100%);
-    border: 1px solid var(--red);
-    border-radius: 14px;
-    padding: 1.8rem 2rem;
-    margin-bottom: 1.5rem;
-}
-.verdict-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 2rem;
-    font-weight: 900;
-    margin: 0 0 0.5rem 0;
-}
-.verdict-sub {
-    font-size: 0.95rem;
-    color: var(--lgray);
-    line-height: 1.65;
-}
+.verdict-go { background: linear-gradient(135deg, #0A2A1A 0%, #0F3D25 100%); border: 1px solid var(--green); border-radius: 14px; padding: 1.8rem 2rem; margin-bottom: 1.5rem; }
+.verdict-caution { background: linear-gradient(135deg, #2A1A00 0%, #3D2800 100%); border: 1px solid var(--amber); border-radius: 14px; padding: 1.8rem 2rem; margin-bottom: 1.5rem; }
+.verdict-avoid { background: linear-gradient(135deg, #2A0A0A 0%, #3D1010 100%); border: 1px solid var(--red); border-radius: 14px; padding: 1.8rem 2rem; margin-bottom: 1.5rem; }
+.verdict-title { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; margin: 0 0 0.5rem 0; }
+.verdict-sub { font-size: 0.95rem; color: var(--lgray); line-height: 1.65; }
 
-/* ── Section headers ── */
-.section-header {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--white);
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 0.6rem;
-    margin: 2rem 0 1.2rem 0;
-}
+.section-header { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--white); border-bottom: 1px solid var(--border); padding-bottom: 0.6rem; margin: 2rem 0 1.2rem 0; }
 
-/* ── Warning pills ── */
 .pill-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.6rem 0; }
-.pill {
-    padding: 0.3rem 0.8rem;
-    border-radius: 20px;
-    font-size: 0.78rem;
-    font-weight: 600;
-    font-family: 'DM Sans', sans-serif;
-}
+.pill { padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.78rem; font-weight: 600; font-family: 'DM Sans', sans-serif; }
 .pill-red   { background: rgba(204,34,34,0.18);  color: #FF8888; border: 1px solid rgba(204,34,34,0.4); }
 .pill-gold  { background: rgba(200,150,30,0.18); color: var(--lgold); border: 1px solid rgba(200,150,30,0.4); }
 .pill-green { background: rgba(26,122,74,0.18);  color: #66FFAA; border: 1px solid rgba(26,122,74,0.4); }
 .pill-blue  { background: rgba(82,37,193,0.2);   color: var(--soft); border: 1px solid rgba(82,37,193,0.4); }
 
-/* ── Metric row ── */
-.metric-row {
-    display: flex;
-    gap: 1rem;
-    margin: 1rem 0;
-    flex-wrap: wrap;
-}
-.metric-box {
-    background: var(--deep);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 1rem 1.4rem;
-    flex: 1;
-    min-width: 140px;
-}
-.metric-val {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--gold);
-    line-height: 1;
-    margin-bottom: 0.3rem;
-}
-.metric-lbl {
-    font-size: 0.72rem;
-    color: var(--gray);
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    font-weight: 600;
-}
+.metric-row { display: flex; gap: 1rem; margin: 1rem 0; flex-wrap: wrap; }
+.metric-box { background: var(--deep); border: 1px solid var(--border); border-radius: 10px; padding: 1rem 1.4rem; flex: 1; min-width: 140px; }
+.metric-val { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; color: var(--gold); line-height: 1; margin-bottom: 0.3rem; }
+.metric-lbl { font-size: 0.72rem; color: var(--gray); text-transform: uppercase; letter-spacing: 0.15em; font-weight: 600; }
 
-/* ── Quote block ── */
-.quote-block {
-    background: var(--deep);
-    border-left: 3px solid var(--gold);
-    border-radius: 0 10px 10px 0;
-    padding: 1.1rem 1.4rem;
-    margin: 1rem 0;
-    font-family: 'Playfair Display', serif;
-    font-size: 1.05rem;
-    font-style: italic;
-    color: var(--lgold);
-    line-height: 1.7;
-}
+.quote-block { background: var(--deep); border-left: 3px solid var(--gold); border-radius: 0 10px 10px 0; padding: 1.1rem 1.4rem; margin: 1rem 0; font-family: 'Playfair Display', serif; font-size: 1.05rem; font-style: italic; color: var(--lgold); line-height: 1.7; }
 
-/* ── Streamlit widget overrides ── */
-.stFileUploader > div {
-    background: var(--deep) !important;
-    border: 2px dashed var(--border) !important;
-    border-radius: 14px !important;
-    color: var(--white) !important;
-}
+.stFileUploader > div { background: var(--deep) !important; border: 2px dashed var(--border) !important; border-radius: 14px !important; color: var(--white) !important; }
 .stFileUploader label { color: var(--soft) !important; font-family: 'DM Sans', sans-serif !important; }
-.stButton > button {
-    background: linear-gradient(135deg, var(--violet), #3B1FA0) !important;
-    color: var(--white) !important;
-    border: none !important;
-    border-radius: 10px !important;
-    font-family: 'DM Sans', sans-serif !important;
-    font-weight: 600 !important;
-    font-size: 0.95rem !important;
-    padding: 0.7rem 2rem !important;
-    width: 100% !important;
-    transition: all 0.3s !important;
-    letter-spacing: 0.05em !important;
-}
-.stButton > button:hover {
-    background: linear-gradient(135deg, #6B3FD1, var(--violet)) !important;
-    transform: translateY(-1px) !important;
-    box-shadow: 0 8px 25px rgba(82,37,193,0.4) !important;
-}
-.stSelectbox > div > div {
-    background: var(--card) !important;
-    border: 1px solid var(--border) !important;
-    border-radius: 10px !important;
-    color: var(--white) !important;
-}
+.stButton > button { background: linear-gradient(135deg, var(--violet), #3B1FA0) !important; color: var(--white) !important; border: none !important; border-radius: 10px !important; font-family: 'DM Sans', sans-serif !important; font-weight: 600 !important; font-size: 0.95rem !important; padding: 0.7rem 2rem !important; width: 100% !important; transition: all 0.3s !important; letter-spacing: 0.05em !important; }
+.stButton > button:hover { background: linear-gradient(135deg, #6B3FD1, var(--violet)) !important; transform: translateY(-1px) !important; box-shadow: 0 8px 25px rgba(82,37,193,0.4) !important; }
+.stSelectbox > div > div { background: var(--card) !important; border: 1px solid var(--border) !important; border-radius: 10px !important; color: var(--white) !important; }
 .stSpinner > div { color: var(--gold) !important; }
 div[data-testid="stMarkdownContainer"] p { color: var(--lgray) !important; }
 .stProgress > div > div { background: var(--violet) !important; }
@@ -305,7 +150,7 @@ hr { border-color: var(--border) !important; margin: 2rem 0 !important; }
 
 # ── Sidebar: Dynamic Company Context ──────────────────────────
 with st.sidebar:
-    st.markdown("### ⚙️ Your Company Profile")
+    st.markdown("### &#9881; Your Company Profile")
     st.markdown("Tell the AI who you are pitching as, so it can tailor the intelligence brief.")
     
     user_company = st.text_input("Your Company Name", placeholder="e.g., Acme Tech")
@@ -313,7 +158,7 @@ with st.sidebar:
     user_value_prop = st.text_area("Your Unique Value Proposition", placeholder="e.g., Reduces supply chain waste by 40% and integrates in 2 days.")
     
     st.markdown("---")
-    st.markdown("### 🎯 Analysis Target")
+    st.markdown("### &#127919; Analysis Target")
     analysis_goal = st.selectbox(
         "What is the goal of this analysis?", 
         ["B2B Sales Pitch", "Strategic Partnership", "Competitive Analysis", "Investment Screening"]
@@ -322,10 +167,10 @@ with st.sidebar:
 # ── Hero ──────────────────────────────────────────────────────
 st.markdown("""
 <div class="hero">
-    <div class="hero-eyebrow">📊 AI-Powered Strategic Analysis</div>
+    <div class="hero-eyebrow">&#128202; AI-Powered Strategic Analysis</div>
     <div class="hero-title">B2B Deal Intelligence Engine</div>
     <div class="hero-sub">
-        Upload any target company's annual report. Get a complete strategic brief tailored to 
+        Upload any target company&#39;s annual report. Get a complete strategic brief tailored to 
         your specific product, value proposition, and sales goals.
     </div>
 </div>
@@ -349,9 +194,9 @@ Analyse the uploaded annual report from the target company's perspective. Your p
 Produce a structured deal intelligence brief. You must extract signals specifically relevant to how {company_name} can pitch, partner, or align with this target company.
 
 OUTPUT FORMAT:
-Return a valid JSON object matching the exact keys and types shown below. Do not use pseudo-code in your output. Ensure all brackets and quotes are closed perfectly.
+Return a valid JSON object matching the exact keys and types shown below. Do not use pseudo-code in your output. Ensure all brackets and quotes are closed perfectly. Use placeholder strings if data is not found.
 
-{
+{{
   "company_name": "string",
   "report_year": "string",
   "verdict": "GO",
@@ -360,62 +205,61 @@ Return a valid JSON object matching the exact keys and types shown below. Do not
   "deal_potential": "HIGH",
   "estimated_year1_usd": "string",
   "estimated_year3_usd": "string",
-  "category_signals": {
+  "category_signals": {{
     "has_relevant_category": true,
     "category_revenue_mentioned": "string",
     "category_growth_trend": "string",
     "product_mentioned": true,
     "competitor_brands_mentioned": ["string"],
     "key_quote": "string"
-  },
-  "esg_signals": {
+  }},
+  "esg_signals": {{
     "has_sustainability_commitments": true,
     "esg_score": 8,
     "relevant_commitments": ["string"],
     "product_esg_fit": "string"
-  },
-  "financial_health": {
+  }},
+  "financial_health": {{
     "revenue_trend": "string",
     "margin_pressure": true,
     "financial_risk_flags": ["string"],
     "counterparty_risk": "string"
-  },
-  "shopper_profile": {
+  }},
+  "shopper_profile": {{
     "primary_demographic": "string",
     "avg_basket_size": "string",
     "target_buyer_insight": "string"
-  },
-  "approach_strategy": {
+  }},
+  "approach_strategy": {{
     "entry_point": "string",
     "opening_line": "string",
     "pitch_angle": "string",
     "secondary_angle": "string",
     "timing": "string"
-  },
+  }},
   "cautions": [
-    {
+    {{
       "flag": "string",
       "severity": "HIGH",
       "detail": "string"
-    }
+    }}
   ],
   "opportunities": [
-    {
+    {{
       "opportunity": "string",
       "strength": "HIGH",
       "detail": "string"
-    }
+    }}
   ],
   "negotiation_leverage": ["string"],
   "deal_structure_recommendation": "string",
   "red_lines": ["string"],
   "first_meeting_agenda": ["string"]
-}
+}}"""
 
 # ── Helper: PDF to base64 ─────────────────────────────────────
 def upload_pdf_to_gemini(uploaded_file):
     genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
-    
     tmp_path = Path(uploaded_file.name).name
     with open(tmp_path, "wb") as f:
         f.write(uploaded_file.getbuffer())
@@ -448,7 +292,7 @@ def analyse_report(gemini_file, company, product, value_prop, goal, hint: str = 
         safety_settings=safety_settings
     )
 
-user_prompt = "Analyse this annual report and return the JSON intelligence brief."
+    user_prompt = "Analyse this annual report and return the JSON intelligence brief."
     if hint:
         user_prompt += f"\nTarget company context hint: {hint}"
 
@@ -462,7 +306,6 @@ user_prompt = "Analyse this annual report and return the JSON intelligence brief
     )
 
     raw = response.text.strip()
-    
     try:
         return json.loads(raw)
     except json.JSONDecodeError as e:
@@ -482,8 +325,23 @@ def render_verdict(data: dict):
     col  = {"GO": "#66FFAA", "AVOID": "#FF6666"}.get(verdict, "#FFD080")
 
     st.markdown(f'<div class="{cls}"><div class="verdict-title" style="color:{col}">{icon} &nbsp;{verdict}</div><div class="verdict-sub">{reason}</div></div>', unsafe_allow_html=True)
-
     st.markdown(f'<div class="metric-row"><div class="metric-box"><div class="metric-val">{conf}/10</div><div class="metric-lbl">Confidence Score</div></div><div class="metric-box"><div class="metric-val">{dp}</div><div class="metric-lbl">Deal Potential</div></div><div class="metric-box"><div class="metric-val" style="font-size:1.2rem">{y1}</div><div class="metric-lbl">Est. Year 1 Value</div></div><div class="metric-box"><div class="metric-val" style="font-size:1.2rem">{y3}</div><div class="metric-lbl">Est. Year 3 Value</div></div></div>', unsafe_allow_html=True)
+
+# ── Helper: Render section ────────────────────────────────────
+def section(title: str):
+    st.markdown(f'<div class="section-header">{title}</div>', unsafe_allow_html=True)
+
+def intel_card(label: str, title: str, body: str, accent: str = "#5225C1"):
+    st.markdown(f'<div class="intel-card" style="--accent-color:{accent}"><div class="card-label">{label}</div><div class="card-title">{title}</div><div class="card-body">{body}</div></div>', unsafe_allow_html=True)
+
+def pills(items: list, pill_class: str = "pill-blue"):
+    if not items:
+        return
+    html = '<div class="pill-row">'
+    for item in items:
+        html += f'<span class="pill {pill_class}">{item}</span>'
+    html += '</div>'
+    st.markdown(html, unsafe_allow_html=True)
 
 # ── Helper: Render full brief ─────────────────────────────────
 def render_brief(data: dict):
@@ -493,11 +351,11 @@ def render_brief(data: dict):
     st.markdown(f"<h2 style='font-family:Playfair Display,serif;color:var(--lgold);margin-bottom:0.2rem'>{company} &middot; {year}</h2>", unsafe_allow_html=True)
     st.markdown("<p style='color:var(--gray);font-size:0.85rem;margin-bottom:1.5rem'>Strategic Deal Analysis &amp; Intelligence Brief</p>", unsafe_allow_html=True)
 
-    # ── 1. VERDICT ──
+    # 1. VERDICT
     section("01 &middot; Deal Verdict")
     render_verdict(data)
 
-    # ── 2. CATEGORY SIGNALS ──
+    # 2. CATEGORY SIGNALS
     section("02 &middot; Product &amp; Category Signals")
     cs = data.get("category_signals", {})
     col1, col2 = st.columns(2)
@@ -507,13 +365,10 @@ def render_brief(data: dict):
         trend = cs.get("category_growth_trend", "NOT MENTIONED")
         trend_color = {"GROWING":"#66FFAA","STABLE":"#FFD080","DECLINING":"#FF6666","NOT MENTIONED":"#888888"}.get(trend,"#888888")
         
-        # Build string safely outside of the f-string
         cat_text = '<span style="color:#66FFAA">&#10003; Present</span>' if has_cat else '<span style="color:#FF6666">&#10007; Not found</span>'
         prod_text = '<span style="color:#66FFAA">&#10003; Yes</span>' if prod_ment else '<span style="color:#888">No</span>'
         rev_text = cs.get('category_revenue_mentioned') or 'Not disclosed'
-        
         body_html = f"Relevant Category: {cat_text}<br>Specific Product Mentioned: {prod_text}<br>Growth Trend: <span style='color:{trend_color}'>{trend}</span><br>Revenue: {rev_text}"
-        
         intel_card("MARKET CATEGORY", "Category Match Found" if has_cat else "No Direct Category Found", body_html, "#C8961E")
         
     with col2:
@@ -523,29 +378,26 @@ def render_brief(data: dict):
             comp_html += ", ".join(f"<span style='color:var(--lgold)'>{c}</span>" for c in competitors)
         else:
             comp_html += "<span style='color:var(--gray)'>None identified</span>"
-            
         intel_card("COMPETITOR INTELLIGENCE", "Ecosystem Brands Identified", comp_html, "#9272E0")
 
     quote = cs.get("key_quote")
     if quote:
         st.markdown(f'<div class="quote-block">&quot;{quote}&quot;</div>', unsafe_allow_html=True)
 
-    # ── 3. ESG SIGNALS ──
+    # 3. ESG SIGNALS
     section("03 &middot; ESG &amp; Sustainability Fit")
     esg = data.get("esg_signals", {})
     esg_score = esg.get("esg_score", 5)
     bar_color = "#66FFAA" if esg_score >= 7 else ("#FFD080" if esg_score >= 4 else "#FF6666")
     commitments = esg.get("relevant_commitments", [])
     prod_fit = esg.get("product_esg_fit", "")
-    
     esg_html = f'<div class="intel-card" style="--accent-color:{bar_color}"><div class="card-label">ESG ALIGNMENT SCORE</div><div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem"><div style="font-family:\'Playfair Display\',serif;font-size:2.5rem;font-weight:700;color:{bar_color}">{esg_score}/10</div><div style="flex:1;background:var(--border);border-radius:4px;height:8px"><div style="width:{esg_score*10}%;background:{bar_color};height:8px;border-radius:4px;transition:width 1s"></div></div></div><div class="card-body">{prod_fit}</div></div>'
     st.markdown(esg_html, unsafe_allow_html=True)
-
     if commitments:
         st.markdown("<p style='color:var(--gray);font-size:0.82rem;margin:0.5rem 0 0.3rem'>Relevant ESG commitments:</p>", unsafe_allow_html=True)
         pills(commitments, "pill-green")
 
-    # ── 4. FINANCIAL HEALTH ──
+    # 4. FINANCIAL HEALTH
     section("04 &middot; Financial Health &amp; Counterparty Risk")
     fin = data.get("financial_health", {})
     rev_trend = fin.get("revenue_trend", "STABLE")
@@ -553,18 +405,16 @@ def render_brief(data: dict):
     risk_col = {"LOW":"#66FFAA","MEDIUM":"#FFD080","HIGH":"#FF6666"}.get(risk,"#FFD080")
     rev_col  = {"GROWING":"#66FFAA","STABLE":"#FFD080","DECLINING":"#FF6666"}.get(rev_trend,"#FFD080")
     flags = fin.get("financial_risk_flags", [])
-
     col1, col2 = st.columns(2)
     with col1:
         intel_card("REVENUE TREND", f"<span style='color:{rev_col}'>{rev_trend}</span>", "Based on reported figures in annual report.", rev_col)
     with col2:
         intel_card("COUNTERPARTY RISK", f"<span style='color:{risk_col}'>{risk}</span>", "Risk of non-payment or commercial instability.", risk_col)
-
     if flags:
         st.markdown("<p style='color:var(--gray);font-size:0.82rem;margin:0.5rem 0 0.3rem'>Risk flags identified:</p>", unsafe_allow_html=True)
         pills(flags, "pill-red")
 
-    # ── 5. SHOPPER PROFILE ──
+    # 5. SHOPPER PROFILE
     section("05 &middot; Target Demographics")
     sp = data.get("shopper_profile", {})
     basket = sp.get('avg_basket_size') or 'Not disclosed'
@@ -572,12 +422,11 @@ def render_brief(data: dict):
     sp_body = f"Average basket size: {basket}<br><br>{insight}"
     intel_card("CUSTOMER INTELLIGENCE", sp.get("primary_demographic", "Not specified"), sp_body, "#5225C1")
 
-    # ── 6. APPROACH STRATEGY ──
+    # 6. APPROACH STRATEGY
     section("06 &middot; Your Approach Strategy")
     ap = data.get("approach_strategy", {})
     opening = ap.get("opening_line", "")
     st.markdown(f'<div class="quote-block">{opening}</div>', unsafe_allow_html=True)
-
     col1, col2 = st.columns(2)
     p_angle = ap.get("pitch_angle", "")
     s_angle = ap.get("secondary_angle", "")
@@ -585,10 +434,9 @@ def render_brief(data: dict):
         intel_card("PRIMARY PITCH ANGLE", p_angle[:60]+"...", p_angle, "#C8961E")
     with col2:
         intel_card("SECONDARY ANGLE", s_angle[:60]+"...", s_angle, "#9272E0")
-
     intel_card("WHO TO CONTACT & WHEN", ap.get("entry_point", ""), ap.get("timing", ""), "#5225C1")
 
-    # ── 7. OPPORTUNITIES ──
+    # 7. OPPORTUNITIES
     section("07 &middot; Opportunities Identified")
     opps = data.get("opportunities", [])
     for opp in opps:
@@ -596,7 +444,7 @@ def render_brief(data: dict):
         scol = {"HIGH":"#C8961E","MEDIUM":"#9272E0","LOW":"#888888"}.get(strength,"#9272E0")
         intel_card(f"OPPORTUNITY &middot; {strength} STRENGTH", opp.get("opportunity", ""), opp.get("detail", ""), scol)
 
-    # ── 8. CAUTIONS ──
+    # 8. CAUTIONS
     section("08 &middot; Cautions &amp; Red Flags")
     cautions = data.get("cautions", [])
     for c in cautions:
@@ -605,75 +453,62 @@ def render_brief(data: dict):
         flag_icon = {"HIGH":"&#128308;","MEDIUM":"&#128993;","LOW":"&#9898;"}.get(sev,"&#128993;")
         intel_card(f"{flag_icon} {sev} SEVERITY", c.get("flag", ""), c.get("detail", ""), scol)
 
-    # ── 9. NEGOTIATION LEVERAGE ──
+    # 9. NEGOTIATION LEVERAGE
     section("09 &middot; Your Negotiation Leverage")
     leverage = data.get("negotiation_leverage", [])
     if leverage:
         for i, point in enumerate(leverage, 1):
             st.markdown(f'<div style="display:flex;gap:1rem;margin-bottom:0.8rem;align-items:flex-start"><div style="background:var(--gold);color:var(--ink);font-family:\'Playfair Display\',serif;font-weight:700;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.85rem">{i}</div><div style="font-size:0.93rem;color:var(--lgray);line-height:1.7;padding-top:3px">{point}</div></div>', unsafe_allow_html=True)
 
-    # ── 10. RED LINES ──
+    # 10. RED LINES
     section("10 &middot; What NOT to Say or Do")
     red_lines = data.get("red_lines", [])
     if red_lines:
         for rl in red_lines:
             st.markdown(f'<div style="display:flex;gap:0.8rem;margin-bottom:0.6rem;align-items:flex-start"><span style="color:#FF4444;font-size:1.2rem;flex-shrink:0">&#10007;</span><div style="font-size:0.92rem;color:var(--lgray);line-height:1.7">{rl}</div></div>', unsafe_allow_html=True)
 
-    # ── 11. DEAL STRUCTURE ──
+    # 11. DEAL STRUCTURE
     section("11 &middot; Recommended Deal Structure")
     intel_card("DEAL RECOMMENDATION", "How to structure this partnership", data.get("deal_structure_recommendation", ""), "#C8961E")
 
-    # ── 12. FIRST MEETING AGENDA ──
+    # 12. FIRST MEETING AGENDA
     section("12 &middot; First Buyer Meeting Agenda")
     agenda = data.get("first_meeting_agenda", [])
     if agenda:
         for i, item in enumerate(agenda, 1):
             st.markdown(f'<div style="display:flex;gap:1rem;margin-bottom:0.8rem;align-items:flex-start"><div style="background:var(--violet);color:var(--white);font-family:\'Playfair Display\',serif;font-weight:700;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.88rem">{i}</div><div style="font-size:0.93rem;color:var(--lgray);line-height:1.7;padding-top:4px">{item}</div></div>', unsafe_allow_html=True)
 
-    # ── Footer ──
+    # Footer
     st.markdown("<br>", unsafe_allow_html=True)
     st.markdown('<div style="text-align:center;padding:1.5rem;border-top:1px solid var(--border);margin-top:2rem"><div style="font-family:\'Playfair Display\',serif;font-size:1rem;color:var(--gold);margin-bottom:0.3rem">Deal Intelligence Engine</div><div style="font-size:0.78rem;color:var(--gray)">Powered by Gemini AI &middot; B2B Strategy &amp; Market Intelligence</div></div>', unsafe_allow_html=True)
-
 
 # ══════════════════════════════════════════════════════════════
 # MAIN APP
 # ══════════════════════════════════════════════════════════════
 
-# Session state
 if "analysis" not in st.session_state:
     st.session_state.analysis = None
 if "analysing" not in st.session_state:
     st.session_state.analysing = False
 
-# ── Upload section ────────────────────────────────────────────
 col_upload, col_info = st.columns([1.6, 1])
 
 with col_upload:
     st.markdown('<div class="card-label" style="margin-bottom:0.6rem">UPLOAD ANNUAL REPORT</div>', unsafe_allow_html=True)
-    uploaded = st.file_uploader(
-        "Drop the target company's annual report PDF here",
-        type=["pdf"],
-        label_visibility="collapsed"
-    )
+    uploaded = st.file_uploader("Drop the target company's annual report PDF here", type=["pdf"], label_visibility="collapsed")
+    target_hint = st.text_input("Target company name (optional — helps the AI orient faster)", placeholder="e.g. H&M, Snowflake, John Deere...", label_visibility="visible")
 
-    target_hint = st.text_input(
-        "Target company name (optional — helps the AI orient faster)",
-        placeholder="e.g. H&M, Snowflake, John Deere...",
-        label_visibility="visible"
-    )
-
-if uploaded:
+    if uploaded:
         file_size_mb = uploaded.size / (1024*1024)
-        st.markdown(f"""
-        <div style="background:var(--deep);border:1px solid var(--border);border-radius:10px;padding:0.8rem 1.2rem;margin:0.5rem 0;display:flex;align-items:center;gap:0.8rem"><span style="font-size:1.2rem">&#128196;</span><div><div style="font-size:0.9rem;color:var(--white);font-weight:500">{uploaded.name}</div><div style="font-size:0.75rem;color:var(--gray)">{file_size_mb:.1f} MB &middot; PDF</div></div><span style="margin-left:auto;color:#66FFAA;font-size:0.8rem">&#10003; Ready</span></div>
-        """, unsafe_allow_html=True)
-        # Check if the user filled out the sidebar profile
+        st.markdown(f'<div style="background:var(--deep);border:1px solid var(--border);border-radius:10px;padding:0.8rem 1.2rem;margin:0.5rem 0;display:flex;align-items:center;gap:0.8rem"><span style="font-size:1.2rem">&#128196;</span><div><div style="font-size:0.9rem;color:var(--white);font-weight:500">{uploaded.name}</div><div style="font-size:0.75rem;color:var(--gray)">{file_size_mb:.1f} MB &middot; PDF</div></div><span style="margin-left:auto;color:#66FFAA;font-size:0.8rem">&#10003; Ready</span></div>', unsafe_allow_html=True)
+
         if not user_company or not user_product:
-            st.warning("⚠️ Please fill out your Company Name and Product in the left sidebar before analyzing.")
+            st.warning("&#9888; Please fill out your Company Name and Product in the left sidebar before analyzing.")
         else:
-            if st.button("📊 Generate Strategic Brief", type="primary"):
+            if st.button("Generate Strategic Brief", type="primary"):
                 st.session_state.analysing = True
                 st.session_state.analysis = None
+
 with col_info:
     st.markdown("""
     <div class="intel-card" style="--accent-color:#C8961E;height:fit-content">
@@ -696,18 +531,16 @@ with col_info:
     </div>
     """, unsafe_allow_html=True)
 
-# ── Analysis runner ───────────────────────────────────────────
 if st.session_state.analysing and uploaded is not None:
     st.markdown("<hr>", unsafe_allow_html=True)
-
     progress_container = st.empty()
     status_container   = st.empty()
 
     steps = [
         (0.10, "Reading the annual report..."),
-        (0.25, "Scanning for strategic & category alignment..."),
-        (0.40, "Extracting ESG commitments & priorities..."),
-        (0.55, "Analysing financial health & risk flags..."),
+        (0.25, "Scanning for strategic &amp; category alignment..."),
+        (0.40, "Extracting ESG commitments &amp; priorities..."),
+        (0.55, "Analysing financial health &amp; risk flags..."),
         (0.70, "Building custom approach strategy..."),
         (0.85, "Identifying your negotiation leverage..."),
         (0.95, "Compiling your strategic intelligence brief..."),
@@ -715,26 +548,17 @@ if st.session_state.analysing and uploaded is not None:
 
     try:
         gemini_file = upload_pdf_to_gemini(uploaded)
-
         for pct, msg in steps:
             progress_container.progress(pct)
-            status_container.markdown(
-                f"<p style='color:var(--lilac);font-size:0.9rem;text-align:center'>⟳ &nbsp;{msg}</p>",
-                unsafe_allow_html=True
-            )
+            status_container.markdown(f"<p style='color:var(--lilac);font-size:0.9rem;text-align:center'>&#8635; &nbsp;{msg}</p>", unsafe_allow_html=True)
             time.sleep(0.4)
 
         result = analyse_report(gemini_file, user_company, user_product, user_value_prop, analysis_goal, target_hint)
-        
-        # Save results and stop analysis flag
         st.session_state.analysis = result
         st.session_state.analysing = False
 
         progress_container.progress(1.0)
-        status_container.markdown(
-            "<p style='color:#66FFAA;font-size:0.9rem;text-align:center'>✓ &nbsp;Analysis complete</p>",
-            unsafe_allow_html=True
-        )
+        status_container.markdown("<p style='color:#66FFAA;font-size:0.9rem;text-align:center'>&#10003; &nbsp;Analysis complete</p>", unsafe_allow_html=True)
         time.sleep(0.8)
         progress_container.empty()
         status_container.empty()
@@ -744,23 +568,19 @@ if st.session_state.analysing and uploaded is not None:
         st.session_state.analysing = False
         st.error(f"Analysis failed: {str(e)}")
 
-# ── Render result ─────────────────────────────────────────────
 if st.session_state.analysis:
     st.markdown("<hr>", unsafe_allow_html=True)
     render_brief(st.session_state.analysis)
-
-    # Download JSON
     st.markdown("<br>", unsafe_allow_html=True)
     company_name = st.session_state.analysis.get("company_name", "target_company").replace(" ", "_")
     st.download_button(
-        label="⬇  Download Full Brief as JSON",
+        label="Download Full Brief as JSON",
         data=json.dumps(st.session_state.analysis, indent=2),
         file_name=f"Strategic_DealBrief_{company_name}.json",
         mime="application/json",
         use_container_width=True
     )
 
-# ── Empty state ───────────────────────────────────────────────
 if not uploaded and not st.session_state.analysis:
     st.markdown("<hr>", unsafe_allow_html=True)
     st.markdown("""<div style="text-align:center;padding:3rem 1rem;color:var(--gray)"><div style="font-size:3rem;margin-bottom:1rem">&#128203;</div><div style="font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--soft);margin-bottom:0.5rem">Upload an Annual Report to Begin</div><div style="font-size:0.9rem;line-height:1.7;max-width:480px;margin:0 auto">Works with any public company&#39;s annual report, sustainability report, or 10-K filing. Upload the PDF, configure your company profile on the left, and generate a complete strategic brief.</div></div>""", unsafe_allow_html=True)
