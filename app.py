@@ -765,18 +765,18 @@ with col_info:
         <div class="card-label">WHAT YOU GET</div>
         <div class="card-title">12-Point Strategy Brief</div>
         <div class="card-body">
-            <div style="margin-bottom:0.5rem">✓ &nbsp;<strong>GO / CAUTION / AVOID</strong> verdict</div>
-            <div style="margin-bottom:0.5rem">✓ &nbsp;Product & Category fit signals</div>
-            <div style="margin-bottom:0.5rem">✓ &nbsp;ESG alignment score</div>
-            <div style="margin-bottom:0.5rem">✓ &nbsp;Financial health & risk check</div>
-            <div style="margin-bottom:0.5rem">✓ &nbsp;Target shopper profile match</div>
-            <div style="margin-bottom:0.5rem">✓ &nbsp;Custom outreach strategy & opening line</div>
-            <div style="margin-bottom:0.5rem">✓ &nbsp;Hidden opportunities extracted from text</div>
-            <div style="margin-bottom:0.5rem">✓ &nbsp;Cautions & specific red flags</div>
-            <div style="margin-bottom:0.5rem">✓ &nbsp;Your unique negotiation leverage</div>
-            <div style="margin-bottom:0.5rem">✓ &nbsp;What NOT to say to the buyer</div>
-            <div style="margin-bottom:0.5rem">✓ &nbsp;Recommended deal structure</div>
-            <div>✓ &nbsp;First meeting agenda</div>
+            <div style="margin-bottom:0.5rem">&#10003; &nbsp;<strong>GO / CAUTION / AVOID</strong> verdict</div>
+            <div style="margin-bottom:0.5rem">&#10003; &nbsp;Product &amp; Category fit signals</div>
+            <div style="margin-bottom:0.5rem">&#10003; &nbsp;ESG alignment score</div>
+            <div style="margin-bottom:0.5rem">&#10003; &nbsp;Financial health &amp; risk check</div>
+            <div style="margin-bottom:0.5rem">&#10003; &nbsp;Target shopper profile match</div>
+            <div style="margin-bottom:0.5rem">&#10003; &nbsp;Custom outreach strategy &amp; opening line</div>
+            <div style="margin-bottom:0.5rem">&#10003; &nbsp;Hidden opportunities extracted from text</div>
+            <div style="margin-bottom:0.5rem">&#10003; &nbsp;Cautions &amp; specific red flags</div>
+            <div style="margin-bottom:0.5rem">&#10003; &nbsp;Your unique negotiation leverage</div>
+            <div style="margin-bottom:0.5rem">&#10003; &nbsp;What NOT to say to the buyer</div>
+            <div style="margin-bottom:0.5rem">&#10003; &nbsp;Recommended deal structure</div>
+            <div>&#10003; &nbsp;First meeting agenda</div>
         </div>
     </div>
     """, unsafe_allow_html=True)
