@@ -680,16 +680,13 @@ def render_brief(data: dict):
             </div>
             """, unsafe_allow_html=True)
 
-    # ── 10. RED LINES ──
+# ── 10. RED LINES ──
     section("10 · What NOT to Say or Do")
     red_lines = data.get("red_lines", [])
     if red_lines:
         for rl in red_lines:
             st.markdown(f"""
-            <div style="display:flex;gap:0.8rem;margin-bottom:0.6rem;align-items:flex-start">
-                <span style="color:#FF4444;font-size:1rem;flex-shrink:0">✗</span>
-                <div style="font-size:0.92rem;color:var(--lgray);line-height:1.7">{rl}</div>
-            </div>
+            <div style="display:flex;gap:0.8rem;margin-bottom:0.6rem;align-items:flex-start"><span style="color:#FF4444;font-size:1.2rem;flex-shrink:0">&#10007;</span><div style="font-size:0.92rem;color:var(--lgray);line-height:1.7">{rl}</div></div>
             """, unsafe_allow_html=True)
 
     # ── 11. DEAL STRUCTURE ──
