@@ -668,17 +668,14 @@ def render_brief(data: dict):
             c.get("detail", ""),
             scol
         )
-
-    # ── 9. NEGOTIATION LEVERAGE ──
+# ── 9. NEGOTIATION LEVERAGE ──
     section("09 · Your Negotiation Leverage")
     leverage = data.get("negotiation_leverage", [])
     if leverage:
         for i, point in enumerate(leverage, 1):
             st.markdown(f"""
             <div style="display:flex;gap:1rem;margin-bottom:0.8rem;align-items:flex-start">
-                <div style="background:var(--gold);color:var(--ink);font-family:'Playfair Display',serif;font-weight:700;
-                    width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-                    flex-shrink:0;font-size:0.85rem">{i}</div>
+                <div style="background:var(--gold);color:var(--ink);font-family:'Playfair Display',serif;font-weight:700;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.85rem">{i}</div>
                 <div style="font-size:0.93rem;color:var(--lgray);line-height:1.7;padding-top:3px">{point}</div>
             </div>
             """, unsafe_allow_html=True)
@@ -711,9 +708,7 @@ def render_brief(data: dict):
         for i, item in enumerate(agenda, 1):
             st.markdown(f"""
             <div style="display:flex;gap:1rem;margin-bottom:0.8rem;align-items:flex-start">
-                <div style="background:var(--violet);color:var(--white);font-family:'Playfair Display',serif;font-weight:700;
-                    width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-                    flex-shrink:0;font-size:0.88rem">{i}</div>
+                <div style="background:var(--violet);color:var(--white);font-family:'Playfair Display',serif;font-weight:700;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.88rem">{i}</div>
                 <div style="font-size:0.93rem;color:var(--lgray);line-height:1.7;padding-top:4px">{item}</div>
             </div>
             """, unsafe_allow_html=True)
