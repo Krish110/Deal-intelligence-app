@@ -465,7 +465,7 @@ def analyse_report(gemini_file, company, product, value_prop, goal, hint: str = 
     try:
         return json.loads(raw)
     except json.JSONDecodeError as e:
-        raise Exception(f"JSON Parsing Error: {e}\n\nRAW AI OUTPUT:\n{raw}")
+        raise Exception(f"JSON Parsing Error: {e}\n\nRAW AI OUTPUT:\n{raw}") 
 
 # ── Helper: Render verdict ────────────────────────────────────
 def render_verdict(data: dict):
