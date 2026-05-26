@@ -7,10 +7,10 @@ from pathlib import Path
 
 # ── Page config ───────────────────────────────────────────────
 st.set_page_config(
-    page_title="Inter Gold · Deal Intelligence",
-    page_icon="💎",
+    page_title="B2B Deal Intelligence Engine",
+    page_icon="📊",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="expanded" # Changed to expanded so users see the config
 )
 
 # ── Custom CSS ────────────────────────────────────────────────
@@ -115,16 +115,6 @@ html, body, [class*="css"] {
     margin-bottom: 1.5rem;
 }
 .upload-zone:hover { border-color: var(--violet); }
-.upload-label {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.2rem;
-    color: var(--soft);
-    margin-bottom: 0.4rem;
-}
-.upload-hint {
-    font-size: 0.82rem;
-    color: var(--gray);
-}
 
 /* ── Cards ── */
 .intel-card {
@@ -210,32 +200,6 @@ html, body, [class*="css"] {
     padding-bottom: 0.6rem;
     margin: 2rem 0 1.2rem 0;
 }
-
-/* ── Approach steps ── */
-.step-block {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
-    align-items: flex-start;
-}
-.step-num {
-    background: var(--violet);
-    color: var(--white);
-    font-family: 'Playfair Display', serif;
-    font-size: 1rem;
-    font-weight: 700;
-    width: 32px; height: 32px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    margin-top: 2px;
-}
-.step-text {
-    font-size: 0.93rem;
-    color: var(--lgray);
-    line-height: 1.7;
-}
-.step-head { font-weight: 600; color: var(--white); }
 
 /* ── Warning pills ── */
 .pill-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.6rem 0; }
@@ -331,11 +295,7 @@ html, body, [class*="css"] {
 .stSpinner > div { color: var(--gold) !important; }
 div[data-testid="stMarkdownContainer"] p { color: var(--lgray) !important; }
 .stProgress > div > div { background: var(--violet) !important; }
-
-/* ── Divider ── */
 hr { border-color: var(--border) !important; margin: 2rem 0 !important; }
-
-/* ── Scrollbar ── */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--ink); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
@@ -343,125 +303,136 @@ hr { border-color: var(--border) !important; margin: 2rem 0 !important; }
 </style>
 """, unsafe_allow_html=True)
 
+# ── Sidebar: Dynamic Company Context ──────────────────────────
+with st.sidebar:
+    st.markdown("### ⚙️ Your Company Profile")
+    st.markdown("Tell the AI who you are pitching as, so it can tailor the intelligence brief.")
+    
+    user_company = st.text_input("Your Company Name", placeholder="e.g., Acme Tech")
+    user_product = st.text_area("Your Core Product/Service", placeholder="e.g., B2B SaaS for Supply Chain Visibility")
+    user_value_prop = st.text_area("Your Unique Value Proposition", placeholder="e.g., Reduces supply chain waste by 40% and integrates in 2 days.")
+    
+    st.markdown("---")
+    st.markdown("### 🎯 Analysis Target")
+    analysis_goal = st.selectbox(
+        "What is the goal of this analysis?", 
+        ["B2B Sales Pitch", "Strategic Partnership", "Competitive Analysis", "Investment Screening"]
+    )
+
 # ── Hero ──────────────────────────────────────────────────────
 st.markdown("""
 <div class="hero">
-    <div class="hero-eyebrow">💎 Inter Gold · Mumbai · IGI Certified Lab-Grown Diamonds</div>
-    <div class="hero-title">Deal Intelligence Engine</div>
+    <div class="hero-eyebrow">📊 AI-Powered Strategic Analysis</div>
+    <div class="hero-title">B2B Deal Intelligence Engine</div>
     <div class="hero-sub">
-        Upload any retailer's annual report. Get a complete strategic brief —
-        should you pursue the deal, how to approach them, and exactly what to watch out for.
+        Upload any target company's annual report. Get a complete strategic brief tailored to 
+        your specific product, value proposition, and sales goals.
     </div>
 </div>
 """, unsafe_allow_html=True)
 
-# ── System prompt ─────────────────────────────────────────────
-# 🛑 FIXED: The output schema is now 100% perfectly valid JSON. No pseudo-code.
-SYSTEM_PROMPT = """You are a senior B2B sales strategist and market intelligence analyst for Inter Gold — a Mumbai-based manufacturer of IGI-certified lab-grown diamond (LGD) jewellery. 
+# ── System Prompt Builder ─────────────────────────────────────
+def get_system_prompt(company, product, value_prop, goal):
+    company_name = company if company else "[Your Company]"
+    product_name = product if product else "[Your Product/Service]"
+    value_statement = value_prop if value_prop else "[Your Value Proposition]"
+    
+    return f"""You are a senior B2B sales strategist and market intelligence analyst. 
 
-YOUR COMPANY:
-- Inter Gold India, (world's diamond manufacturing capital)
-- Products: IGI/GIA certified lab-grown diamond jewellery — solitaire studs, pendants, rings, tennis bracelets, bridal sets
-- Positioning: Real certified diamonds at 60-80% lower cost than mined, solar-powered CVD facility, full traceability
-- Target price range: €30–€1,000 wholesale depending on format
-- Delivery: DDP (Delivered Duty Paid) to Europe, UK, Australia
-- Capabilities: White-label manufacturing, own brand, bulk supply
-- Certifications: IGI, GIA, BIS Hallmark, GJEPC member
-- Key advantage: India-Australia ECTA (0% duty), UK-India FTA (imminent), EU-India FTA (pending)
+YOUR COMPANY CONTEXT:
+- Your Company Name: {company_name}
+- Product/Service You Sell: {product_name}
+- Your Value Proposition & Advantages: {value_statement}
 
 YOUR TASK:
-Analyse the uploaded annual report from a retailer's perspective and produce a structured deal intelligence brief. You must extract signals specifically relevant to whether this retailer should stock lab-grown diamond jewellery from Inter Gold.
+Analyse the uploaded annual report from the target company's perspective. Your primary objective is: {goal}.
+Produce a structured deal intelligence brief. You must extract signals specifically relevant to how {company_name} can pitch, partner, or align with this target company.
 
 OUTPUT FORMAT:
-Return a valid JSON object matching the exact keys and types shown below. Do not use pseudo-code in your output. Ensure all brackets and quotes are closed.
+Return a valid JSON object matching the exact keys and types shown below. Do not use pseudo-code in your output. Ensure all brackets and quotes are closed perfectly.
 
-{
+{{
   "company_name": "string",
   "report_year": "string",
   "verdict": "GO",
-  "verdict_reason": "One powerful sentence explaining the verdict",
+  "verdict_reason": "One powerful sentence explaining the verdict based on your product fit",
   "confidence_score": 8,
   "deal_potential": "HIGH",
-  "estimated_year1_eur": "€200,000 - €500,000",
-  "estimated_year3_eur": "€800,000 - €2,000,000",
-  "jewellery_signals": {
-    "has_jewellery_category": true,
-    "jewellery_revenue_mentioned": "string or null",
-    "jewellery_growth_trend": "GROWING",
-    "lgd_mentioned": true,
+  "estimated_year1_usd": "$200,000 - $500,000",
+  "estimated_year3_usd": "$800,000 - $2,000,000",
+  "category_signals": {{
+    "has_relevant_category": true,
+    "category_revenue_mentioned": "string or null",
+    "category_growth_trend": "GROWING",
+    "product_mentioned": true,
     "competitor_brands_mentioned": ["brand1", "brand2"],
-    "key_quote": "Most relevant quote here"
-  },
-  "esg_signals": {
+    "key_quote": "Most relevant quote related to your product category"
+  }},
+  "esg_signals": {{
     "has_sustainability_commitments": true,
     "esg_score": 8,
     "relevant_commitments": ["commitment 1", "commitment 2"],
-    "lgd_esg_fit": "string explaining fit"
-  },
-  "financial_health": {
+    "product_esg_fit": "string explaining how your product aligns with their ESG agenda"
+  }},
+  "financial_health": {{
     "revenue_trend": "GROWING",
     "margin_pressure": true,
     "financial_risk_flags": ["risk 1"],
     "counterparty_risk": "LOW"
-  },
-  "shopper_profile": {
+  }},
+  "shopper_profile": {{
     "primary_demographic": "string",
     "avg_basket_size": "string",
-    "jewellery_buyer_insight": "string"
-  },
-  "approach_strategy": {
-    "entry_point": "string",
-    "opening_line": "string",
+    "target_buyer_insight": "string describing their customer base"
+  }},
+  "approach_strategy": {{
+    "entry_point": "string (who to contact)",
+    "opening_line": "string (custom opening line)",
     "pitch_angle": "string",
     "secondary_angle": "string",
     "timing": "string"
-  },
+  }},
   "cautions": [
-    {
+    {{
       "flag": "string",
       "severity": "HIGH",
       "detail": "string"
-    }
+    }}
   ],
   "opportunities": [
-    {
+    {{
       "opportunity": "string",
       "strength": "HIGH",
       "detail": "string"
-    }
+    }}
   ],
   "negotiation_leverage": ["point 1", "point 2"],
   "deal_structure_recommendation": "string",
   "red_lines": ["line 1", "line 2"],
   "first_meeting_agenda": ["point 1", "point 2"]
-}"""
+}}"""
 
 # ── Helper: PDF to base64 ─────────────────────────────────────
 def upload_pdf_to_gemini(uploaded_file):
-    """Upload PDF bytes to Gemini Files API and return the file object."""
     genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
     
-    # Save safely to current directory
     tmp_path = Path(uploaded_file.name).name
     with open(tmp_path, "wb") as f:
         f.write(uploaded_file.getbuffer())
         
     gemini_file = genai.upload_file(tmp_path, mime_type="application/pdf")
     
-    # Give Google's servers time to digest the PDF before we hit it
     while gemini_file.state.name == 'PROCESSING':
         time.sleep(2)
         gemini_file = genai.get_file(gemini_file.name)
         
-    os.remove(tmp_path) # Clean up local file
+    os.remove(tmp_path)
     return gemini_file
 
-# ── Helper: Call Claude ───────────────────────────────────────
-def analyse_report(gemini_file, retailer_hint: str = "") -> dict:
-    """Send uploaded PDF file + prompt to Gemini and parse JSON response."""
+# ── Helper: Call Claude/Gemini ────────────────────────────────
+def analyse_report(gemini_file, company, product, value_prop, goal, hint: str = "") -> dict:
     genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 
-    # Relax safety settings so it can discuss the ethics of the mined diamond industry
     safety_settings = [
         {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
         {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
@@ -469,21 +440,23 @@ def analyse_report(gemini_file, retailer_hint: str = "") -> dict:
         {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"}
     ]
 
+    dynamic_prompt = get_system_prompt(company, product, value_prop, goal)
+
     model = genai.GenerativeModel(
         model_name="gemini-2.5-flash", 
-        system_instruction=SYSTEM_PROMPT,
+        system_instruction=dynamic_prompt,
         safety_settings=safety_settings
     )
 
     user_prompt = f"""Analyse this annual report and return the JSON intelligence brief.
-{f'Retailer context hint: {retailer_hint}' if retailer_hint else ''}"""
+{f'Target company context hint: {hint}' if hint else ''}"""
 
     response = model.generate_content(
         [gemini_file, user_prompt],
         generation_config=genai.GenerationConfig(
             max_output_tokens=8192,
             temperature=0.2,
-            response_mime_type="application/json" # 🛑 STRICT JSON MODE IS BACK ON
+            response_mime_type="application/json"
         )
     )
 
@@ -499,8 +472,8 @@ def render_verdict(data: dict):
     verdict = data.get("verdict", "PROCEED WITH CAUTION")
     reason  = data.get("verdict_reason", "")
     conf    = data.get("confidence_score", 5)
-    y1      = data.get("estimated_year1_eur", "—")
-    y3      = data.get("estimated_year3_eur", "—")
+    y1      = data.get("estimated_year1_usd", "—")
+    y3      = data.get("estimated_year3_usd", "—")
     dp      = data.get("deal_potential", "MEDIUM")
 
     cls = {"GO": "verdict-go", "AVOID": "verdict-avoid"}.get(verdict, "verdict-caution")
@@ -514,7 +487,6 @@ def render_verdict(data: dict):
     </div>
     """, unsafe_allow_html=True)
 
-    # Metrics
     st.markdown(f"""
     <div class="metric-row">
         <div class="metric-box">
@@ -527,11 +499,11 @@ def render_verdict(data: dict):
         </div>
         <div class="metric-box">
             <div class="metric-val" style="font-size:1.2rem">{y1}</div>
-            <div class="metric-lbl">Est. Year 1 Revenue</div>
+            <div class="metric-lbl">Est. Year 1 Value</div>
         </div>
         <div class="metric-box">
             <div class="metric-val" style="font-size:1.2rem">{y3}</div>
-            <div class="metric-lbl">Est. Year 3 Upside</div>
+            <div class="metric-lbl">Est. Year 3 Value</div>
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -560,44 +532,44 @@ def pills(items: list, pill_class: str = "pill-blue"):
 
 # ── Helper: Render full brief ─────────────────────────────────
 def render_brief(data: dict):
-    company = data.get("company_name", "Retailer")
+    company = data.get("company_name", "Target Company")
     year    = data.get("report_year", "")
 
     st.markdown(f"<h2 style='font-family:Playfair Display,serif;color:var(--lgold);margin-bottom:0.2rem'>{company} · {year}</h2>", unsafe_allow_html=True)
-    st.markdown(f"<p style='color:var(--gray);font-size:0.85rem;margin-bottom:1.5rem'>Annual Report Intelligence Brief · DiamondCraft LGD Deal Analysis</p>", unsafe_allow_html=True)
+    st.markdown(f"<p style='color:var(--gray);font-size:0.85rem;margin-bottom:1.5rem'>Strategic Deal Analysis & Intelligence Brief</p>", unsafe_allow_html=True)
 
     # ── 1. VERDICT ──
     section("01 · Deal Verdict")
     render_verdict(data)
 
-    # ── 2. JEWELLERY SIGNALS ──
-    section("02 · Jewellery & Category Signals")
-    js = data.get("jewellery_signals", {})
+    # ── 2. CATEGORY SIGNALS ──
+    section("02 · Product & Category Signals")
+    cs = data.get("category_signals", {})
     col1, col2 = st.columns(2)
     with col1:
-        has_jwl = js.get("has_jewellery_category", False)
-        lgd_ment = js.get("lgd_mentioned", False)
-        trend = js.get("jewellery_growth_trend", "NOT MENTIONED")
+        has_cat = cs.get("has_relevant_category", False)
+        prod_ment = cs.get("product_mentioned", False)
+        trend = cs.get("category_growth_trend", "NOT MENTIONED")
         trend_color = {"GROWING":"#66FFAA","STABLE":"#FFD080","DECLINING":"#FF6666","NOT MENTIONED":"#888888"}.get(trend,"#888888")
         intel_card(
-            "JEWELLERY CATEGORY",
-            "Category Presence" if has_jwl else "No Jewellery Category Found",
-            f"Jewellery category: {'<span style=\"color:#66FFAA\">✓ Present</span>' if has_jwl else '<span style=\"color:#FF6666\">✗ Not found</span>'}<br>"
-            f"LGD mentioned: {'<span style=\"color:#66FFAA\">✓ Yes</span>' if lgd_ment else '<span style=\"color:#888\">No</span>'}<br>"
-            f"Growth trend: <span style=\"color:{trend_color}\">{trend}</span><br>"
-            f"Revenue: {js.get('jewellery_revenue_mentioned') or 'Not disclosed'}",
+            "MARKET CATEGORY",
+            "Category Match Found" if has_cat else "No Direct Category Found",
+            f"Relevant Category: {'<span style=\"color:#66FFAA\">✓ Present</span>' if has_cat else '<span style=\"color:#FF6666\">✗ Not found</span>'}<br>"
+            f"Specific Product Mentioned: {'<span style=\"color:#66FFAA\">✓ Yes</span>' if prod_ment else '<span style=\"color:#888\">No</span>'}<br>"
+            f"Growth Trend: <span style=\"color:{trend_color}\">{trend}</span><br>"
+            f"Revenue: {cs.get('category_revenue_mentioned') or 'Not disclosed'}",
             "#C8961E"
         )
     with col2:
-        competitors = js.get("competitor_brands_mentioned", [])
+        competitors = cs.get("competitor_brands_mentioned", [])
         intel_card(
             "COMPETITOR INTELLIGENCE",
-            "Jewellery Brands in Their Ecosystem",
+            "Ecosystem Brands Identified",
             f"Brands mentioned in report:<br>" + (", ".join(f"<span style='color:var(--lgold)'>{c}</span>" for c in competitors) if competitors else "<span style='color:var(--gray)'>None identified</span>"),
             "#9272E0"
         )
 
-    quote = js.get("key_quote")
+    quote = cs.get("key_quote")
     if quote:
         st.markdown(f'<div class="quote-block">"{quote}"</div>', unsafe_allow_html=True)
 
@@ -607,7 +579,7 @@ def render_brief(data: dict):
     esg_score = esg.get("esg_score", 5)
     bar_color = "#66FFAA" if esg_score >= 7 else ("#FFD080" if esg_score >= 4 else "#FF6666")
     commitments = esg.get("relevant_commitments", [])
-    lgd_fit = esg.get("lgd_esg_fit", "")
+    prod_fit = esg.get("product_esg_fit", "")
 
     st.markdown(f"""
     <div class="intel-card" style="--accent-color:{bar_color}">
@@ -618,12 +590,12 @@ def render_brief(data: dict):
                 <div style="width:{esg_score*10}%;background:{bar_color};height:8px;border-radius:4px;transition:width 1s"></div>
             </div>
         </div>
-        <div class="card-body">{lgd_fit}</div>
+        <div class="card-body">{prod_fit}</div>
     </div>
     """, unsafe_allow_html=True)
 
     if commitments:
-        st.markdown("<p style='color:var(--gray);font-size:0.82rem;margin:0.5rem 0 0.3rem'>ESG commitments relevant to LGD pitch:</p>", unsafe_allow_html=True)
+        st.markdown("<p style='color:var(--gray);font-size:0.82rem;margin:0.5rem 0 0.3rem'>Relevant ESG commitments:</p>", unsafe_allow_html=True)
         pills(commitments, "pill-green")
 
     # ── 4. FINANCIAL HEALTH ──
@@ -646,13 +618,13 @@ def render_brief(data: dict):
         pills(flags, "pill-red")
 
     # ── 5. SHOPPER PROFILE ──
-    section("05 · Their Shopper — Is She Your Buyer?")
+    section("05 · Target Demographics")
     sp = data.get("shopper_profile", {})
     intel_card(
-        "SHOPPER INTELLIGENCE",
+        "CUSTOMER INTELLIGENCE",
         sp.get("primary_demographic", "Not specified"),
-        f"Average basket: {sp.get('avg_basket_size') or 'Not disclosed'}<br><br>"
-        f"{sp.get('jewellery_buyer_insight', 'No jewellery buyer insight available from report.')}",
+        f"Average basket size: {sp.get('avg_basket_size') or 'Not disclosed'}<br><br>"
+        f"{sp.get('target_buyer_insight', 'No specific customer insight available from report.')}",
         "#5225C1"
     )
 
@@ -671,7 +643,7 @@ def render_brief(data: dict):
     intel_card("WHO TO CONTACT & WHEN", ap.get("entry_point", ""), ap.get("timing", ""), "#5225C1")
 
     # ── 7. OPPORTUNITIES ──
-    section("07 · Opportunities Identified in Their Report")
+    section("07 · Opportunities Identified")
     opps = data.get("opportunities", [])
     for opp in opps:
         strength = opp.get("strength", "MEDIUM")
@@ -750,8 +722,8 @@ def render_brief(data: dict):
     st.markdown("<br>", unsafe_allow_html=True)
     st.markdown(f"""
     <div style="text-align:center;padding:1.5rem;border-top:1px solid var(--border);margin-top:2rem">
-        <div style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--gold);margin-bottom:0.3rem">Inter Gold · Mumbai</div>
-        <div style="font-size:0.78rem;color:var(--gray)">IGI Certified Lab-Grown Diamond Jewellery ·</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--gold);margin-bottom:0.3rem">Deal Intelligence Engine</div>
+        <div style="font-size:0.78rem;color:var(--gray)">Powered by Gemini AI · B2B Strategy & Market Intelligence</div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -772,14 +744,14 @@ col_upload, col_info = st.columns([1.6, 1])
 with col_upload:
     st.markdown('<div class="card-label" style="margin-bottom:0.6rem">UPLOAD ANNUAL REPORT</div>', unsafe_allow_html=True)
     uploaded = st.file_uploader(
-        "Drop the retailer's annual report PDF here",
+        "Drop the target company's annual report PDF here",
         type=["pdf"],
         label_visibility="collapsed"
     )
 
-    retailer_hint = st.text_input(
-        "Retailer name (optional — helps the AI orient faster)",
-        placeholder="e.g. H&M, Zalando, John Lewis...",
+    target_hint = st.text_input(
+        "Target company name (optional — helps the AI orient faster)",
+        placeholder="e.g. H&M, Snowflake, John Deere...",
         label_visibility="visible"
     )
 
@@ -797,26 +769,30 @@ with col_upload:
         </div>
         """, unsafe_allow_html=True)
 
-        if st.button("💎 Analyse Annual Report", type="primary"):
-            st.session_state.analysing = True
-            st.session_state.analysis = None
+        # Check if the user filled out the sidebar profile
+        if not user_company or not user_product:
+            st.warning("⚠️ Please fill out your Company Name and Product in the left sidebar before analyzing.")
+        else:
+            if st.button("📊 Generate Strategic Brief", type="primary"):
+                st.session_state.analysing = True
+                st.session_state.analysis = None
 
 with col_info:
     st.markdown("""
     <div class="intel-card" style="--accent-color:#C8961E;height:fit-content">
         <div class="card-label">WHAT YOU GET</div>
-        <div class="card-title">12-Point Deal Brief</div>
+        <div class="card-title">12-Point Strategy Brief</div>
         <div class="card-body">
             <div style="margin-bottom:0.5rem">✓ &nbsp;<strong>GO / CAUTION / AVOID</strong> verdict</div>
-            <div style="margin-bottom:0.5rem">✓ &nbsp;Jewellery category signals</div>
+            <div style="margin-bottom:0.5rem">✓ &nbsp;Product & Category fit signals</div>
             <div style="margin-bottom:0.5rem">✓ &nbsp;ESG alignment score</div>
-            <div style="margin-bottom:0.5rem">✓ &nbsp;Financial health check</div>
-            <div style="margin-bottom:0.5rem">✓ &nbsp;Shopper profile match</div>
-            <div style="margin-bottom:0.5rem">✓ &nbsp;Approach strategy & opening line</div>
-            <div style="margin-bottom:0.5rem">✓ &nbsp;Opportunities from their own report</div>
-            <div style="margin-bottom:0.5rem">✓ &nbsp;Cautions & red flags</div>
-            <div style="margin-bottom:0.5rem">✓ &nbsp;Your negotiation leverage</div>
-            <div style="margin-bottom:0.5rem">✓ &nbsp;What NOT to say</div>
+            <div style="margin-bottom:0.5rem">✓ &nbsp;Financial health & risk check</div>
+            <div style="margin-bottom:0.5rem">✓ &nbsp;Target shopper profile match</div>
+            <div style="margin-bottom:0.5rem">✓ &nbsp;Custom outreach strategy & opening line</div>
+            <div style="margin-bottom:0.5rem">✓ &nbsp;Hidden opportunities extracted from text</div>
+            <div style="margin-bottom:0.5rem">✓ &nbsp;Cautions & specific red flags</div>
+            <div style="margin-bottom:0.5rem">✓ &nbsp;Your unique negotiation leverage</div>
+            <div style="margin-bottom:0.5rem">✓ &nbsp;What NOT to say to the buyer</div>
             <div style="margin-bottom:0.5rem">✓ &nbsp;Recommended deal structure</div>
             <div>✓ &nbsp;First meeting agenda</div>
         </div>
@@ -832,12 +808,12 @@ if st.session_state.analysing and uploaded is not None:
 
     steps = [
         (0.10, "Reading the annual report..."),
-        (0.25, "Scanning jewellery & accessories sections..."),
-        (0.40, "Extracting ESG commitments..."),
+        (0.25, "Scanning for strategic & category alignment..."),
+        (0.40, "Extracting ESG commitments & priorities..."),
         (0.55, "Analysing financial health & risk flags..."),
-        (0.70, "Building approach strategy..."),
-        (0.85, "Identifying negotiation leverage..."),
-        (0.95, "Compiling your deal intelligence brief..."),
+        (0.70, "Building custom approach strategy..."),
+        (0.85, "Identifying your negotiation leverage..."),
+        (0.95, "Compiling your strategic intelligence brief..."),
     ]
 
     try:
@@ -851,7 +827,7 @@ if st.session_state.analysing and uploaded is not None:
             )
             time.sleep(0.4)
 
-        result = analyse_report(gemini_file, retailer_hint)
+        result = analyse_report(gemini_file, user_company, user_product, user_value_prop, analysis_goal, target_hint)
         
         # Save results and stop analysis flag
         st.session_state.analysis = result
@@ -878,11 +854,11 @@ if st.session_state.analysis:
 
     # Download JSON
     st.markdown("<br>", unsafe_allow_html=True)
-    company_name = st.session_state.analysis.get("company_name", "retailer").replace(" ", "_")
+    company_name = st.session_state.analysis.get("company_name", "target_company").replace(" ", "_")
     st.download_button(
         label="⬇  Download Full Brief as JSON",
         data=json.dumps(st.session_state.analysis, indent=2),
-        file_name=f"DiamondCraft_DealBrief_{company_name}.json",
+        file_name=f"Strategic_DealBrief_{company_name}.json",
         mime="application/json",
         use_container_width=True
     )
@@ -894,12 +870,11 @@ if not uploaded and not st.session_state.analysis:
     <div style="text-align:center;padding:3rem 1rem;color:var(--gray)">
         <div style="font-size:3rem;margin-bottom:1rem">📋</div>
         <div style="font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--soft);margin-bottom:0.5rem">
-            Drop in any retailer's annual report
+            Upload an Annual Report to Begin
         </div>
         <div style="font-size:0.9rem;line-height:1.7;max-width:480px;margin:0 auto">
-            Works with H&M, Zalando, John Lewis, El Corte Inglés, Otto, Inditex —
-            or any retailer you are evaluating. Upload the PDF and get a complete
-            deal intelligence brief in under 60 seconds.
+            Works with any public company's annual report, sustainability report, or 10-K filing. 
+            Upload the PDF, configure your company profile on the left, and generate a complete strategic brief.
         </div>
     </div>
     """, unsafe_allow_html=True)
