@@ -747,12 +747,11 @@ with col_upload:
         label_visibility="visible"
     )
 
-  if uploaded:
+if uploaded:
         file_size_mb = uploaded.size / (1024*1024)
         st.markdown(f"""
-        <div style="background:var(--deep);border:1px solid var(--border);border-radius:10px;padding:0.8rem 1.2rem;margin:0.5rem 0;display:flex;align-items:center;gap:0.8rem"><span style="font-size:1.2rem">📄</span><div><div style="font-size:0.9rem;color:var(--white);font-weight:500">{uploaded.name}</div><div style="font-size:0.75rem;color:var(--gray)">{file_size_mb:.1f} MB &middot; PDF</div></div><span style="margin-left:auto;color:#66FFAA;font-size:0.8rem">&#10003; Ready</span></div>
+        <div style="background:var(--deep);border:1px solid var(--border);border-radius:10px;padding:0.8rem 1.2rem;margin:0.5rem 0;display:flex;align-items:center;gap:0.8rem"><span style="font-size:1.2rem">&#128196;</span><div><div style="font-size:0.9rem;color:var(--white);font-weight:500">{uploaded.name}</div><div style="font-size:0.75rem;color:var(--gray)">{file_size_mb:.1f} MB &middot; PDF</div></div><span style="margin-left:auto;color:#66FFAA;font-size:0.8rem">&#10003; Ready</span></div>
         """, unsafe_allow_html=True)
-
         # Check if the user filled out the sidebar profile
         if not user_company or not user_product:
             st.warning("⚠️ Please fill out your Company Name and Product in the left sidebar before analyzing.")
