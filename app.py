@@ -448,8 +448,9 @@ def analyse_report(gemini_file, company, product, value_prop, goal, hint: str = 
         safety_settings=safety_settings
     )
 
-    user_prompt = f"""Analyse this annual report and return the JSON intelligence brief.
-{f'Target company context hint: {hint}' if hint else ''}"""
+user_prompt = "Analyse this annual report and return the JSON intelligence brief."
+    if hint:
+        user_prompt += f"\nTarget company context hint: {hint}"
 
     response = model.generate_content(
         [gemini_file, user_prompt],
