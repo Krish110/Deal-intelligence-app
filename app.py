@@ -7,10 +7,10 @@ from pathlib import Path
 
 # ── Page config ───────────────────────────────────────────────
 st.set_page_config(
-    page_title="B2B Deal Intelligence Engine",
-    page_icon="&#128202;", 
+    page_title="Inter Gold · Deal Intelligence",
+    page_icon="💎",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"
 )
 
 # ── Custom CSS ────────────────────────────────────────────────
@@ -18,6 +18,7 @@ st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap');
 
+/* ── Root variables ── */
 :root {
     --ink:     #07070D;
     --deep:    #0F0C1F;
@@ -37,6 +38,7 @@ st.markdown("""
     --amber:   #C8761E;
 }
 
+/* ── Global reset ── */
 html, body, [class*="css"] {
     font-family: 'DM Sans', sans-serif;
     background-color: var(--ink) !important;
@@ -45,10 +47,11 @@ html, body, [class*="css"] {
 
 .stApp { background-color: var(--ink) !important; }
 
-/* ── Hide default streamlit elements (kept header visible for sidebar toggle) ── */
-#MainMenu, footer { visibility: hidden; }
+/* ── Hide default streamlit elements ── */
+#MainMenu, footer, header { visibility: hidden; }
 .block-container { padding: 0 2rem 3rem 2rem !important; max-width: 1400px !important; }
 
+/* ── Hero ── */
 .hero {
     background: linear-gradient(135deg, var(--deep) 0%, var(--rich) 50%, var(--deep) 100%);
     border-bottom: 1px solid var(--border);
@@ -101,46 +104,238 @@ html, body, [class*="css"] {
     line-height: 1.6;
 }
 
-.upload-zone { background: var(--deep); border: 2px dashed var(--border); border-radius: 16px; padding: 2.5rem; text-align: center; transition: border-color 0.3s; margin-bottom: 1.5rem; }
+/* ── Upload zone ── */
+.upload-zone {
+    background: var(--deep);
+    border: 2px dashed var(--border);
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    transition: border-color 0.3s;
+    margin-bottom: 1.5rem;
+}
 .upload-zone:hover { border-color: var(--violet); }
+.upload-label {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: var(--soft);
+    margin-bottom: 0.4rem;
+}
+.upload-hint {
+    font-size: 0.82rem;
+    color: var(--gray);
+}
 
-.intel-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 1.6rem; margin-bottom: 1.2rem; position: relative; overflow: hidden; }
-.intel-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--accent-color, var(--violet)); border-radius: 4px 0 0 4px; }
-.card-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gray); margin-bottom: 0.6rem; font-family: 'DM Sans', sans-serif; }
-.card-title { font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 700; color: var(--white); margin-bottom: 0.8rem; }
-.card-body { font-size: 0.92rem; color: var(--lgray); line-height: 1.75; }
+/* ── Cards ── */
+.intel-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.6rem;
+    margin-bottom: 1.2rem;
+    position: relative;
+    overflow: hidden;
+}
+.intel-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px; height: 100%;
+    background: var(--accent-color, var(--violet));
+    border-radius: 4px 0 0 4px;
+}
+.card-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 0.6rem;
+    font-family: 'DM Sans', sans-serif;
+}
+.card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 0.8rem;
+}
+.card-body {
+    font-size: 0.92rem;
+    color: var(--lgray);
+    line-height: 1.75;
+}
 
-.verdict-go { background: linear-gradient(135deg, #0A2A1A 0%, #0F3D25 100%); border: 1px solid var(--green); border-radius: 14px; padding: 1.8rem 2rem; margin-bottom: 1.5rem; }
-.verdict-caution { background: linear-gradient(135deg, #2A1A00 0%, #3D2800 100%); border: 1px solid var(--amber); border-radius: 14px; padding: 1.8rem 2rem; margin-bottom: 1.5rem; }
-.verdict-avoid { background: linear-gradient(135deg, #2A0A0A 0%, #3D1010 100%); border: 1px solid var(--red); border-radius: 14px; padding: 1.8rem 2rem; margin-bottom: 1.5rem; }
-.verdict-title { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; margin: 0 0 0.5rem 0; }
-.verdict-sub { font-size: 0.95rem; color: var(--lgray); line-height: 1.65; }
+/* ── Verdict banner ── */
+.verdict-go {
+    background: linear-gradient(135deg, #0A2A1A 0%, #0F3D25 100%);
+    border: 1px solid var(--green);
+    border-radius: 14px;
+    padding: 1.8rem 2rem;
+    margin-bottom: 1.5rem;
+}
+.verdict-caution {
+    background: linear-gradient(135deg, #2A1A00 0%, #3D2800 100%);
+    border: 1px solid var(--amber);
+    border-radius: 14px;
+    padding: 1.8rem 2rem;
+    margin-bottom: 1.5rem;
+}
+.verdict-avoid {
+    background: linear-gradient(135deg, #2A0A0A 0%, #3D1010 100%);
+    border: 1px solid var(--red);
+    border-radius: 14px;
+    padding: 1.8rem 2rem;
+    margin-bottom: 1.5rem;
+}
+.verdict-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    margin: 0 0 0.5rem 0;
+}
+.verdict-sub {
+    font-size: 0.95rem;
+    color: var(--lgray);
+    line-height: 1.65;
+}
 
-.section-header { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--white); border-bottom: 1px solid var(--border); padding-bottom: 0.6rem; margin: 2rem 0 1.2rem 0; }
+/* ── Section headers ── */
+.section-header {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.6rem;
+    margin: 2rem 0 1.2rem 0;
+}
 
+/* ── Approach steps ── */
+.step-block {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    align-items: flex-start;
+}
+.step-num {
+    background: var(--violet);
+    color: var(--white);
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+.step-text {
+    font-size: 0.93rem;
+    color: var(--lgray);
+    line-height: 1.7;
+}
+.step-head { font-weight: 600; color: var(--white); }
+
+/* ── Warning pills ── */
 .pill-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.6rem 0; }
-.pill { padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.78rem; font-weight: 600; font-family: 'DM Sans', sans-serif; }
+.pill {
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+}
 .pill-red   { background: rgba(204,34,34,0.18);  color: #FF8888; border: 1px solid rgba(204,34,34,0.4); }
 .pill-gold  { background: rgba(200,150,30,0.18); color: var(--lgold); border: 1px solid rgba(200,150,30,0.4); }
 .pill-green { background: rgba(26,122,74,0.18);  color: #66FFAA; border: 1px solid rgba(26,122,74,0.4); }
 .pill-blue  { background: rgba(82,37,193,0.2);   color: var(--soft); border: 1px solid rgba(82,37,193,0.4); }
 
-.metric-row { display: flex; gap: 1rem; margin: 1rem 0; flex-wrap: wrap; }
-.metric-box { background: var(--deep); border: 1px solid var(--border); border-radius: 10px; padding: 1rem 1.4rem; flex: 1; min-width: 140px; }
-.metric-val { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; color: var(--gold); line-height: 1; margin-bottom: 0.3rem; }
-.metric-lbl { font-size: 0.72rem; color: var(--gray); text-transform: uppercase; letter-spacing: 0.15em; font-weight: 600; }
+/* ── Metric row ── */
+.metric-row {
+    display: flex;
+    gap: 1rem;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+}
+.metric-box {
+    background: var(--deep);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.4rem;
+    flex: 1;
+    min-width: 140px;
+}
+.metric-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 0.3rem;
+}
+.metric-lbl {
+    font-size: 0.72rem;
+    color: var(--gray);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-weight: 600;
+}
 
-.quote-block { background: var(--deep); border-left: 3px solid var(--gold); border-radius: 0 10px 10px 0; padding: 1.1rem 1.4rem; margin: 1rem 0; font-family: 'Playfair Display', serif; font-size: 1.05rem; font-style: italic; color: var(--lgold); line-height: 1.7; }
+/* ── Quote block ── */
+.quote-block {
+    background: var(--deep);
+    border-left: 3px solid var(--gold);
+    border-radius: 0 10px 10px 0;
+    padding: 1.1rem 1.4rem;
+    margin: 1rem 0;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-style: italic;
+    color: var(--lgold);
+    line-height: 1.7;
+}
 
-.stFileUploader > div { background: var(--deep) !important; border: 2px dashed var(--border) !important; border-radius: 14px !important; color: var(--white) !important; }
+/* ── Streamlit widget overrides ── */
+.stFileUploader > div {
+    background: var(--deep) !important;
+    border: 2px dashed var(--border) !important;
+    border-radius: 14px !important;
+    color: var(--white) !important;
+}
 .stFileUploader label { color: var(--soft) !important; font-family: 'DM Sans', sans-serif !important; }
-.stButton > button { background: linear-gradient(135deg, var(--violet), #3B1FA0) !important; color: var(--white) !important; border: none !important; border-radius: 10px !important; font-family: 'DM Sans', sans-serif !important; font-weight: 600 !important; font-size: 0.95rem !important; padding: 0.7rem 2rem !important; width: 100% !important; transition: all 0.3s !important; letter-spacing: 0.05em !important; }
-.stButton > button:hover { background: linear-gradient(135deg, #6B3FD1, var(--violet)) !important; transform: translateY(-1px) !important; box-shadow: 0 8px 25px rgba(82,37,193,0.4) !important; }
-.stSelectbox > div > div { background: var(--card) !important; border: 1px solid var(--border) !important; border-radius: 10px !important; color: var(--white) !important; }
+.stButton > button {
+    background: linear-gradient(135deg, var(--violet), #3B1FA0) !important;
+    color: var(--white) !important;
+    border: none !important;
+    border-radius: 10px !important;
+    font-family: 'DM Sans', sans-serif !important;
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    padding: 0.7rem 2rem !important;
+    width: 100% !important;
+    transition: all 0.3s !important;
+    letter-spacing: 0.05em !important;
+}
+.stButton > button:hover {
+    background: linear-gradient(135deg, #6B3FD1, var(--violet)) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 8px 25px rgba(82,37,193,0.4) !important;
+}
+.stSelectbox > div > div {
+    background: var(--card) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 10px !important;
+    color: var(--white) !important;
+}
 .stSpinner > div { color: var(--gold) !important; }
 div[data-testid="stMarkdownContainer"] p { color: var(--lgray) !important; }
 .stProgress > div > div { background: var(--violet) !important; }
+
+/* ── Divider ── */
 hr { border-color: var(--border) !important; margin: 2rem 0 !important; }
+
+/* ── Scrollbar ── */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--ink); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
@@ -148,191 +343,208 @@ hr { border-color: var(--border) !important; margin: 2rem 0 !important; }
 </style>
 """, unsafe_allow_html=True)
 
-# ── Sidebar: Dynamic Company Context ──────────────────────────
-with st.sidebar:
-    st.markdown("### &#9881; Your Company Profile")
-    st.markdown("Tell the AI who you are pitching as, so it can tailor the intelligence brief.")
-    
-    user_company = st.text_input("Your Company Name", placeholder="e.g., Acme Tech")
-    user_product = st.text_area("Your Core Product/Service", placeholder="e.g., B2B SaaS for Supply Chain Visibility")
-    user_value_prop = st.text_area("Your Unique Value Proposition", placeholder="e.g., Reduces supply chain waste by 40% and integrates in 2 days.")
-    
-    st.markdown("---")
-    st.markdown("### &#127919; Analysis Target")
-    analysis_goal = st.selectbox(
-        "What is the goal of this analysis?", 
-        ["B2B Sales Pitch", "Strategic Partnership", "Competitive Analysis", "Investment Screening"]
-    )
-
 # ── Hero ──────────────────────────────────────────────────────
 st.markdown("""
 <div class="hero">
-    <div class="hero-eyebrow">&#128202; AI-Powered Strategic Analysis</div>
-    <div class="hero-title">B2B Deal Intelligence Engine</div>
+    <div class="hero-eyebrow">💎 DiamondCraft India · Surat · IGI Certified Lab-Grown Diamonds</div>
+    <div class="hero-title">Deal Intelligence Engine</div>
     <div class="hero-sub">
-        Upload any target company&#39;s annual report. Get a complete strategic brief tailored to 
-        your specific product, value proposition, and sales goals.
+        Upload any retailer's annual report. Get a complete strategic brief —
+        should you pursue the deal, how to approach them, and exactly what to watch out for.
     </div>
 </div>
 """, unsafe_allow_html=True)
 
-# ── System Prompt Builder ─────────────────────────────────────
-def get_system_prompt(company, product, value_prop, goal):
-    company_name = company if company else "[Your Company]"
-    product_name = product if product else "[Your Product/Service]"
-    value_statement = value_prop if value_prop else "[Your Value Proposition]"
-    
-    return f"""You are a senior B2B sales strategist and market intelligence analyst. 
+# ── System prompt ─────────────────────────────────────────────
+SYSTEM_PROMPT = """You are a senior B2B sales strategist and market intelligence analyst for DiamondCraft India — a Surat-based manufacturer of IGI-certified lab-grown diamond (LGD) jewellery. 
 
-YOUR COMPANY CONTEXT:
-- Your Company Name: {company_name}
-- Product/Service You Sell: {product_name}
-- Your Value Proposition & Advantages: {value_statement}
+YOUR COMPANY:
+- Inter Gold India, (world's diamond manufacturing capital)
+- Products: IGI/GIA certified lab-grown diamond jewellery — solitaire studs, pendants, rings, tennis bracelets, bridal sets
+- Positioning: Real certified diamonds at 60-80% lower cost than mined, solar-powered CVD facility, full traceability
+- Target price range: €30–€1,000 wholesale depending on format
+- Delivery: DDP (Delivered Duty Paid) to Europe, UK, Australia
+- Capabilities: White-label manufacturing, own brand, bulk supply
+- Certifications: IGI, GIA, BIS Hallmark, GJEPC member
+- Key advantage: India-Australia ECTA (0% duty), UK-India FTA (imminent), EU-India FTA (pending)
 
 YOUR TASK:
-Analyse the uploaded annual report from the target company's perspective. Your primary objective is: {goal}.
-Produce a structured deal intelligence brief. You must extract signals specifically relevant to how {company_name} can pitch, partner, or align with this target company.
+Analyse the uploaded annual report from a retailer's perspective and produce a structured deal intelligence brief. You must extract signals specifically relevant to whether this retailer should stock lab-grown diamond jewellery from DiamondCraft India.
+
+Look for:
+1. Jewellery/accessories category mentions — size, growth, strategy
+2. Sustainability commitments — ESG targets, ethical sourcing pledges
+3. Financial health — revenue trends, margin pressure, debt levels
+4. Geographic expansion — which markets they are entering or exiting
+5. Consumer insights — who their shopper is, what she buys, average basket
+6. Competitor mentions — do they reference Pandora, Swarovski, fine jewellery brands?
+7. Category gaps — what are they NOT doing that they should be?
+8. Strategic priorities — what are their 3-5 year ambitions?
+9. Supply chain signals — are they diversifying away from existing suppliers?
+10. Risk flags — financial distress, legal issues, market exit signals
 
 OUTPUT FORMAT:
-Return a valid JSON object matching the exact keys and types shown below. Do not use pseudo-code in your output. Ensure all brackets and quotes are closed perfectly. Use placeholder strings if data is not found.
+Return a valid JSON object with exactly this structure. No text before or after the JSON.
 
-{{
+{
   "company_name": "string",
   "report_year": "string",
-  "verdict": "GO",
-  "verdict_reason": "string",
-  "confidence_score": 8,
-  "deal_potential": "HIGH",
-  "estimated_year1_usd": "string",
-  "estimated_year3_usd": "string",
-  "category_signals": {{
-    "has_relevant_category": true,
-    "category_revenue_mentioned": "string",
-    "category_growth_trend": "string",
-    "product_mentioned": true,
-    "competitor_brands_mentioned": ["string"],
-    "key_quote": "string"
-  }},
-  "esg_signals": {{
-    "has_sustainability_commitments": true,
-    "esg_score": 8,
-    "relevant_commitments": ["string"],
-    "product_esg_fit": "string"
-  }},
-  "financial_health": {{
-    "revenue_trend": "string",
-    "margin_pressure": true,
-    "financial_risk_flags": ["string"],
-    "counterparty_risk": "string"
-  }},
-  "shopper_profile": {{
+  "verdict": "GO" | "PROCEED WITH CAUTION" | "AVOID",
+  "verdict_reason": "One powerful sentence explaining the verdict",
+  "confidence_score": number between 1-10,
+  "deal_potential": "HIGH" | "MEDIUM" | "LOW",
+  "estimated_year1_eur": "string e.g. €200,000 – €500,000",
+  "estimated_year3_eur": "string e.g. €800,000 – €2,000,000",
+  "jewellery_signals": {
+    "has_jewellery_category": true | false,
+    "jewellery_revenue_mentioned": "string or null",
+    "jewellery_growth_trend": "GROWING" | "STABLE" | "DECLINING" | "NOT MENTIONED",
+    "lgd_mentioned": true | false,
+    "competitor_brands_mentioned": ["string array of any jewellery brands mentioned"],
+    "key_quote": "Most relevant direct quote from the report about jewellery/accessories, or null"
+  },
+  "esg_signals": {
+    "has_sustainability_commitments": true | false,
+    "esg_score": 1-10,
+    "relevant_commitments": ["array of ESG commitments relevant to LGD pitch"],
+    "lgd_esg_fit": "string explaining how LGD fits their ESG agenda"
+  },
+  "financial_health": {
+    "revenue_trend": "GROWING" | "STABLE" | "DECLINING",
+    "margin_pressure": true | false,
+    "financial_risk_flags": ["array of any financial concerns"],
+    "counterparty_risk": "LOW" | "MEDIUM" | "HIGH"
+  },
+  "shopper_profile": {
     "primary_demographic": "string",
-    "avg_basket_size": "string",
-    "target_buyer_insight": "string"
-  }},
-  "approach_strategy": {{
-    "entry_point": "string",
-    "opening_line": "string",
-    "pitch_angle": "string",
-    "secondary_angle": "string",
-    "timing": "string"
-  }},
+    "avg_basket_size": "string or null",
+    "jewellery_buyer_insight": "string describing their jewellery buyer based on report"
+  },
+  "approach_strategy": {
+    "entry_point": "string — who to contact and how",
+    "opening_line": "string — the single best opening line for this specific retailer based on what you found in their report",
+    "pitch_angle": "string — primary angle to use",
+    "secondary_angle": "string — backup angle",
+    "timing": "string — when to approach based on their fiscal calendar/strategy cycle"
+  },
   "cautions": [
-    {{
-      "flag": "string",
-      "severity": "HIGH",
-      "detail": "string"
-    }}
+    {
+      "flag": "string — short flag name",
+      "severity": "HIGH" | "MEDIUM" | "LOW",
+      "detail": "string — what to watch out for and why"
+    }
   ],
   "opportunities": [
-    {{
-      "opportunity": "string",
-      "strength": "HIGH",
-      "detail": "string"
-    }}
+    {
+      "opportunity": "string — short name",
+      "strength": "HIGH" | "MEDIUM" | "LOW",
+      "detail": "string — specific opportunity identified from the report"
+    }
   ],
-  "negotiation_leverage": ["string"],
-  "deal_structure_recommendation": "string",
-  "red_lines": ["string"],
-  "first_meeting_agenda": ["string"]
-}}"""
+  "negotiation_leverage": ["array of specific points from their report you can use as leverage in negotiation"],
+  "deal_structure_recommendation": "string — recommended deal structure for this specific retailer",
+  "red_lines": ["array of things you must NOT say or do with this specific retailer"],
+  "first_meeting_agenda": ["array of 4-5 agenda points for the first buyer meeting, specific to this retailer"]
+}"""
 
 # ── Helper: PDF to base64 ─────────────────────────────────────
 def upload_pdf_to_gemini(uploaded_file):
-    genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
-    tmp_path = Path(uploaded_file.name).name
+    """Upload PDF bytes to Gemini Files API and return the file object."""
+    genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
+    uploaded_file.seek(0)
+    pdf_bytes = uploaded_file.read()
+    # Write to a temp file — Gemini Files API needs a file path
+    tmp_path = f"/tmp/{uploaded_file.name}"
     with open(tmp_path, "wb") as f:
-        f.write(uploaded_file.getbuffer())
-        
+        f.write(pdf_bytes)
     gemini_file = genai.upload_file(tmp_path, mime_type="application/pdf")
-    
-    while gemini_file.state.name == 'PROCESSING':
-        time.sleep(2)
-        gemini_file = genai.get_file(gemini_file.name)
-        
-    os.remove(tmp_path)
     return gemini_file
 
-# ── Helper: Call Claude/Gemini ────────────────────────────────
-def analyse_report(gemini_file, company, product, value_prop, goal, hint: str = "") -> dict:
-    genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
-
-    safety_settings = [
-        {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
-        {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
-        {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE"},
-        {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"}
-    ]
-
-    dynamic_prompt = get_system_prompt(company, product, value_prop, goal)
+# ── Helper: Call Claude ───────────────────────────────────────
+def analyse_report(gemini_file, retailer_hint: str = "") -> dict:
+    """Send uploaded PDF file + prompt to Gemini and parse JSON response."""
+    genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
 
     model = genai.GenerativeModel(
-        model_name="gemini-2.5-flash", 
-        system_instruction=dynamic_prompt,
-        safety_settings=safety_settings
+        model_name="gemini-1.5-pro",
+        system_instruction=SYSTEM_PROMPT
     )
 
-    user_prompt = "Analyse this annual report and return the JSON intelligence brief."
-    if hint:
-        user_prompt += f"\nTarget company context hint: {hint}"
+    user_prompt = f"""Analyse this annual report and return the JSON intelligence brief.
+{f'Retailer context hint: {retailer_hint}' if retailer_hint else ''}
+Remember: return ONLY valid JSON, no text before or after."""
 
     response = model.generate_content(
         [gemini_file, user_prompt],
         generation_config=genai.GenerationConfig(
-            max_output_tokens=8192,
-            temperature=0.2,
-            response_mime_type="application/json"
+            max_output_tokens=4000,
+            temperature=0.2
         )
     )
 
     raw = response.text.strip()
-    try:
-        return json.loads(raw)
-    except json.JSONDecodeError as e:
-        raise Exception(f"JSON Parsing Error: {e}\n\nRAW AI OUTPUT:\n{raw}")
+    # Strip markdown fences if Gemini wraps in ```json ... ```
+    if raw.startswith("```"):
+        raw = raw.split("```")[1]
+        if raw.startswith("json"):
+            raw = raw[4:]
+    raw = raw.strip().rstrip("```").strip()
+    return json.loads(raw)
 
 # ── Helper: Render verdict ────────────────────────────────────
 def render_verdict(data: dict):
     verdict = data.get("verdict", "PROCEED WITH CAUTION")
     reason  = data.get("verdict_reason", "")
     conf    = data.get("confidence_score", 5)
-    y1      = data.get("estimated_year1_usd", "—")
-    y3      = data.get("estimated_year3_usd", "—")
+    y1      = data.get("estimated_year1_eur", "—")
+    y3      = data.get("estimated_year3_eur", "—")
     dp      = data.get("deal_potential", "MEDIUM")
 
     cls = {"GO": "verdict-go", "AVOID": "verdict-avoid"}.get(verdict, "verdict-caution")
-    icon = {"GO": "&#9989;", "AVOID": "&#128683;"}.get(verdict, "&#9888;")
+    icon = {"GO": "✅", "AVOID": "🚫"}.get(verdict, "⚠️")
     col  = {"GO": "#66FFAA", "AVOID": "#FF6666"}.get(verdict, "#FFD080")
 
-    st.markdown(f'<div class="{cls}"><div class="verdict-title" style="color:{col}">{icon} &nbsp;{verdict}</div><div class="verdict-sub">{reason}</div></div>', unsafe_allow_html=True)
-    st.markdown(f'<div class="metric-row"><div class="metric-box"><div class="metric-val">{conf}/10</div><div class="metric-lbl">Confidence Score</div></div><div class="metric-box"><div class="metric-val">{dp}</div><div class="metric-lbl">Deal Potential</div></div><div class="metric-box"><div class="metric-val" style="font-size:1.2rem">{y1}</div><div class="metric-lbl">Est. Year 1 Value</div></div><div class="metric-box"><div class="metric-val" style="font-size:1.2rem">{y3}</div><div class="metric-lbl">Est. Year 3 Value</div></div></div>', unsafe_allow_html=True)
+    st.markdown(f"""
+    <div class="{cls}">
+        <div class="verdict-title" style="color:{col}">{icon} &nbsp;{verdict}</div>
+        <div class="verdict-sub">{reason}</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Metrics
+    st.markdown(f"""
+    <div class="metric-row">
+        <div class="metric-box">
+            <div class="metric-val">{conf}/10</div>
+            <div class="metric-lbl">Confidence Score</div>
+        </div>
+        <div class="metric-box">
+            <div class="metric-val">{dp}</div>
+            <div class="metric-lbl">Deal Potential</div>
+        </div>
+        <div class="metric-box">
+            <div class="metric-val" style="font-size:1.2rem">{y1}</div>
+            <div class="metric-lbl">Est. Year 1 Revenue</div>
+        </div>
+        <div class="metric-box">
+            <div class="metric-val" style="font-size:1.2rem">{y3}</div>
+            <div class="metric-lbl">Est. Year 3 Upside</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
 # ── Helper: Render section ────────────────────────────────────
 def section(title: str):
     st.markdown(f'<div class="section-header">{title}</div>', unsafe_allow_html=True)
 
 def intel_card(label: str, title: str, body: str, accent: str = "#5225C1"):
-    st.markdown(f'<div class="intel-card" style="--accent-color:{accent}"><div class="card-label">{label}</div><div class="card-title">{title}</div><div class="card-body">{body}</div></div>', unsafe_allow_html=True)
+    st.markdown(f"""
+    <div class="intel-card" style="--accent-color:{accent}">
+        <div class="card-label">{label}</div>
+        <div class="card-title">{title}</div>
+        <div class="card-body">{body}</div>
+    </div>
+    """, unsafe_allow_html=True)
 
 def pills(items: list, pill_class: str = "pill-blue"):
     if not items:
@@ -345,242 +557,347 @@ def pills(items: list, pill_class: str = "pill-blue"):
 
 # ── Helper: Render full brief ─────────────────────────────────
 def render_brief(data: dict):
-    company = data.get("company_name", "Target Company")
+    company = data.get("company_name", "Retailer")
     year    = data.get("report_year", "")
 
-    st.markdown(f"<h2 style='font-family:Playfair Display,serif;color:var(--lgold);margin-bottom:0.2rem'>{company} &middot; {year}</h2>", unsafe_allow_html=True)
-    st.markdown("<p style='color:var(--gray);font-size:0.85rem;margin-bottom:1.5rem'>Strategic Deal Analysis &amp; Intelligence Brief</p>", unsafe_allow_html=True)
+    st.markdown(f"<h2 style='font-family:Playfair Display,serif;color:var(--lgold);margin-bottom:0.2rem'>{company} · {year}</h2>", unsafe_allow_html=True)
+    st.markdown(f"<p style='color:var(--gray);font-size:0.85rem;margin-bottom:1.5rem'>Annual Report Intelligence Brief · DiamondCraft LGD Deal Analysis</p>", unsafe_allow_html=True)
 
-    # 1. VERDICT
-    section("01 &middot; Deal Verdict")
+    # ── 1. VERDICT ──
+    section("01 · Deal Verdict")
     render_verdict(data)
 
-    # 2. CATEGORY SIGNALS
-    section("02 &middot; Product &amp; Category Signals")
-    cs = data.get("category_signals", {})
+    # ── 2. JEWELLERY SIGNALS ──
+    section("02 · Jewellery & Category Signals")
+    js = data.get("jewellery_signals", {})
     col1, col2 = st.columns(2)
     with col1:
-        has_cat = cs.get("has_relevant_category", False)
-        prod_ment = cs.get("product_mentioned", False)
-        trend = cs.get("category_growth_trend", "NOT MENTIONED")
+        has_jwl = js.get("has_jewellery_category", False)
+        lgd_ment = js.get("lgd_mentioned", False)
+        trend = js.get("jewellery_growth_trend", "NOT MENTIONED")
         trend_color = {"GROWING":"#66FFAA","STABLE":"#FFD080","DECLINING":"#FF6666","NOT MENTIONED":"#888888"}.get(trend,"#888888")
-        
-        cat_text = '<span style="color:#66FFAA">&#10003; Present</span>' if has_cat else '<span style="color:#FF6666">&#10007; Not found</span>'
-        prod_text = '<span style="color:#66FFAA">&#10003; Yes</span>' if prod_ment else '<span style="color:#888">No</span>'
-        rev_text = cs.get('category_revenue_mentioned') or 'Not disclosed'
-        body_html = f"Relevant Category: {cat_text}<br>Specific Product Mentioned: {prod_text}<br>Growth Trend: <span style='color:{trend_color}'>{trend}</span><br>Revenue: {rev_text}"
-        intel_card("MARKET CATEGORY", "Category Match Found" if has_cat else "No Direct Category Found", body_html, "#C8961E")
-        
+        intel_card(
+            "JEWELLERY CATEGORY",
+            "Category Presence" if has_jwl else "No Jewellery Category Found",
+            f"Jewellery category: {'<span style=\"color:#66FFAA\">✓ Present</span>' if has_jwl else '<span style=\"color:#FF6666\">✗ Not found</span>'}<br>"
+            f"LGD mentioned: {'<span style=\"color:#66FFAA\">✓ Yes</span>' if lgd_ment else '<span style=\"color:#888\">No</span>'}<br>"
+            f"Growth trend: <span style=\"color:{trend_color}\">{trend}</span><br>"
+            f"Revenue: {js.get('jewellery_revenue_mentioned') or 'Not disclosed'}",
+            "#C8961E"
+        )
     with col2:
-        competitors = cs.get("competitor_brands_mentioned", [])
-        comp_html = "Brands mentioned in report:<br>"
-        if competitors:
-            comp_html += ", ".join(f"<span style='color:var(--lgold)'>{c}</span>" for c in competitors)
-        else:
-            comp_html += "<span style='color:var(--gray)'>None identified</span>"
-        intel_card("COMPETITOR INTELLIGENCE", "Ecosystem Brands Identified", comp_html, "#9272E0")
+        competitors = js.get("competitor_brands_mentioned", [])
+        intel_card(
+            "COMPETITOR INTELLIGENCE",
+            "Jewellery Brands in Their Ecosystem",
+            f"Brands mentioned in report:<br>" + (", ".join(f"<span style='color:var(--lgold)'>{c}</span>" for c in competitors) if competitors else "<span style='color:var(--gray)'>None identified</span>"),
+            "#9272E0"
+        )
 
-    quote = cs.get("key_quote")
+    quote = js.get("key_quote")
     if quote:
-        st.markdown(f'<div class="quote-block">&quot;{quote}&quot;</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="quote-block">"{quote}"</div>', unsafe_allow_html=True)
 
-    # 3. ESG SIGNALS
-    section("03 &middot; ESG &amp; Sustainability Fit")
+    # ── 3. ESG SIGNALS ──
+    section("03 · ESG & Sustainability Fit")
     esg = data.get("esg_signals", {})
     esg_score = esg.get("esg_score", 5)
     bar_color = "#66FFAA" if esg_score >= 7 else ("#FFD080" if esg_score >= 4 else "#FF6666")
     commitments = esg.get("relevant_commitments", [])
-    prod_fit = esg.get("product_esg_fit", "")
-    esg_html = f'<div class="intel-card" style="--accent-color:{bar_color}"><div class="card-label">ESG ALIGNMENT SCORE</div><div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem"><div style="font-family:\'Playfair Display\',serif;font-size:2.5rem;font-weight:700;color:{bar_color}">{esg_score}/10</div><div style="flex:1;background:var(--border);border-radius:4px;height:8px"><div style="width:{esg_score*10}%;background:{bar_color};height:8px;border-radius:4px;transition:width 1s"></div></div></div><div class="card-body">{prod_fit}</div></div>'
-    st.markdown(esg_html, unsafe_allow_html=True)
+    lgd_fit = esg.get("lgd_esg_fit", "")
+
+    st.markdown(f"""
+    <div class="intel-card" style="--accent-color:{bar_color}">
+        <div class="card-label">ESG ALIGNMENT SCORE</div>
+        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
+            <div style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:700;color:{bar_color}">{esg_score}/10</div>
+            <div style="flex:1;background:var(--border);border-radius:4px;height:8px">
+                <div style="width:{esg_score*10}%;background:{bar_color};height:8px;border-radius:4px;transition:width 1s"></div>
+            </div>
+        </div>
+        <div class="card-body">{lgd_fit}</div>
+    </div>
+    """, unsafe_allow_html=True)
+
     if commitments:
-        st.markdown("<p style='color:var(--gray);font-size:0.82rem;margin:0.5rem 0 0.3rem'>Relevant ESG commitments:</p>", unsafe_allow_html=True)
+        st.markdown("<p style='color:var(--gray);font-size:0.82rem;margin:0.5rem 0 0.3rem'>ESG commitments relevant to LGD pitch:</p>", unsafe_allow_html=True)
         pills(commitments, "pill-green")
 
-    # 4. FINANCIAL HEALTH
-    section("04 &middot; Financial Health &amp; Counterparty Risk")
+    # ── 4. FINANCIAL HEALTH ──
+    section("04 · Financial Health & Counterparty Risk")
     fin = data.get("financial_health", {})
     rev_trend = fin.get("revenue_trend", "STABLE")
     risk = fin.get("counterparty_risk", "MEDIUM")
     risk_col = {"LOW":"#66FFAA","MEDIUM":"#FFD080","HIGH":"#FF6666"}.get(risk,"#FFD080")
     rev_col  = {"GROWING":"#66FFAA","STABLE":"#FFD080","DECLINING":"#FF6666"}.get(rev_trend,"#FFD080")
     flags = fin.get("financial_risk_flags", [])
+
     col1, col2 = st.columns(2)
     with col1:
         intel_card("REVENUE TREND", f"<span style='color:{rev_col}'>{rev_trend}</span>", "Based on reported figures in annual report.", rev_col)
     with col2:
         intel_card("COUNTERPARTY RISK", f"<span style='color:{risk_col}'>{risk}</span>", "Risk of non-payment or commercial instability.", risk_col)
+
     if flags:
         st.markdown("<p style='color:var(--gray);font-size:0.82rem;margin:0.5rem 0 0.3rem'>Risk flags identified:</p>", unsafe_allow_html=True)
         pills(flags, "pill-red")
 
-    # 5. SHOPPER PROFILE
-    section("05 &middot; Target Demographics")
+    # ── 5. SHOPPER PROFILE ──
+    section("05 · Their Shopper — Is She Your Buyer?")
     sp = data.get("shopper_profile", {})
-    basket = sp.get('avg_basket_size') or 'Not disclosed'
-    insight = sp.get('target_buyer_insight', 'No specific customer insight available from report.')
-    sp_body = f"Average basket size: {basket}<br><br>{insight}"
-    intel_card("CUSTOMER INTELLIGENCE", sp.get("primary_demographic", "Not specified"), sp_body, "#5225C1")
+    intel_card(
+        "SHOPPER INTELLIGENCE",
+        sp.get("primary_demographic", "Not specified"),
+        f"Average basket: {sp.get('avg_basket_size') or 'Not disclosed'}<br><br>"
+        f"{sp.get('jewellery_buyer_insight', 'No jewellery buyer insight available from report.')}",
+        "#5225C1"
+    )
 
-    # 6. APPROACH STRATEGY
-    section("06 &middot; Your Approach Strategy")
+    # ── 6. APPROACH STRATEGY ──
+    section("06 · Your Approach Strategy")
     ap = data.get("approach_strategy", {})
-    opening = ap.get("opening_line", "")
-    st.markdown(f'<div class="quote-block">{opening}</div>', unsafe_allow_html=True)
+
+    st.markdown(f'<div class="quote-block">{ap.get("opening_line", "")}</div>', unsafe_allow_html=True)
+
     col1, col2 = st.columns(2)
-    p_angle = ap.get("pitch_angle", "")
-    s_angle = ap.get("secondary_angle", "")
     with col1:
-        intel_card("PRIMARY PITCH ANGLE", p_angle[:60]+"...", p_angle, "#C8961E")
+        intel_card("PRIMARY PITCH ANGLE", ap.get("pitch_angle", "")[:60]+"...", ap.get("pitch_angle", ""), "#C8961E")
     with col2:
-        intel_card("SECONDARY ANGLE", s_angle[:60]+"...", s_angle, "#9272E0")
+        intel_card("SECONDARY ANGLE", ap.get("secondary_angle", "")[:60]+"...", ap.get("secondary_angle", ""), "#9272E0")
+
     intel_card("WHO TO CONTACT & WHEN", ap.get("entry_point", ""), ap.get("timing", ""), "#5225C1")
 
-    # 7. OPPORTUNITIES
-    section("07 &middot; Opportunities Identified")
+    # ── 7. OPPORTUNITIES ──
+    section("07 · Opportunities Identified in Their Report")
     opps = data.get("opportunities", [])
     for opp in opps:
         strength = opp.get("strength", "MEDIUM")
         scol = {"HIGH":"#C8961E","MEDIUM":"#9272E0","LOW":"#888888"}.get(strength,"#9272E0")
-        intel_card(f"OPPORTUNITY &middot; {strength} STRENGTH", opp.get("opportunity", ""), opp.get("detail", ""), scol)
+        intel_card(
+            f"OPPORTUNITY · {strength} STRENGTH",
+            opp.get("opportunity", ""),
+            opp.get("detail", ""),
+            scol
+        )
 
-    # 8. CAUTIONS
-    section("08 &middot; Cautions &amp; Red Flags")
+    # ── 8. CAUTIONS ──
+    section("08 · Cautions & Red Flags")
     cautions = data.get("cautions", [])
     for c in cautions:
         sev = c.get("severity", "MEDIUM")
         scol = {"HIGH":"#CC2222","MEDIUM":"#C8761E","LOW":"#888888"}.get(sev,"#C8761E")
-        flag_icon = {"HIGH":"&#128308;","MEDIUM":"&#128993;","LOW":"&#9898;"}.get(sev,"&#128993;")
-        intel_card(f"{flag_icon} {sev} SEVERITY", c.get("flag", ""), c.get("detail", ""), scol)
+        flag_icon = {"HIGH":"🔴","MEDIUM":"🟡","LOW":"⚪"}.get(sev,"🟡")
+        intel_card(
+            f"{flag_icon} {sev} SEVERITY",
+            c.get("flag", ""),
+            c.get("detail", ""),
+            scol
+        )
 
-    # 9. NEGOTIATION LEVERAGE
-    section("09 &middot; Your Negotiation Leverage")
+    # ── 9. NEGOTIATION LEVERAGE ──
+    section("09 · Your Negotiation Leverage")
     leverage = data.get("negotiation_leverage", [])
     if leverage:
         for i, point in enumerate(leverage, 1):
-            st.markdown(f'<div style="display:flex;gap:1rem;margin-bottom:0.8rem;align-items:flex-start"><div style="background:var(--gold);color:var(--ink);font-family:\'Playfair Display\',serif;font-weight:700;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.85rem">{i}</div><div style="font-size:0.93rem;color:var(--lgray);line-height:1.7;padding-top:3px">{point}</div></div>', unsafe_allow_html=True)
+            st.markdown(f"""
+            <div style="display:flex;gap:1rem;margin-bottom:0.8rem;align-items:flex-start">
+                <div style="background:var(--gold);color:var(--ink);font-family:'Playfair Display',serif;font-weight:700;
+                    width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+                    flex-shrink:0;font-size:0.85rem">{i}</div>
+                <div style="font-size:0.93rem;color:var(--lgray);line-height:1.7;padding-top:3px">{point}</div>
+            </div>
+            """, unsafe_allow_html=True)
 
-    # 10. RED LINES
-    section("10 &middot; What NOT to Say or Do")
+    # ── 10. RED LINES ──
+    section("10 · What NOT to Say or Do")
     red_lines = data.get("red_lines", [])
     if red_lines:
         for rl in red_lines:
-            st.markdown(f'<div style="display:flex;gap:0.8rem;margin-bottom:0.6rem;align-items:flex-start"><span style="color:#FF4444;font-size:1.2rem;flex-shrink:0">&#10007;</span><div style="font-size:0.92rem;color:var(--lgray);line-height:1.7">{rl}</div></div>', unsafe_allow_html=True)
+            st.markdown(f"""
+            <div style="display:flex;gap:0.8rem;margin-bottom:0.6rem;align-items:flex-start">
+                <span style="color:#FF4444;font-size:1rem;flex-shrink:0">✗</span>
+                <div style="font-size:0.92rem;color:var(--lgray);line-height:1.7">{rl}</div>
+            </div>
+            """, unsafe_allow_html=True)
 
-    # 11. DEAL STRUCTURE
-    section("11 &middot; Recommended Deal Structure")
-    intel_card("DEAL RECOMMENDATION", "How to structure this partnership", data.get("deal_structure_recommendation", ""), "#C8961E")
+    # ── 11. DEAL STRUCTURE ──
+    section("11 · Recommended Deal Structure")
+    intel_card(
+        "DEAL RECOMMENDATION",
+        "How to structure this partnership",
+        data.get("deal_structure_recommendation", ""),
+        "#C8961E"
+    )
 
-    # 12. FIRST MEETING AGENDA
-    section("12 &middot; First Buyer Meeting Agenda")
+    # ── 12. FIRST MEETING AGENDA ──
+    section("12 · First Buyer Meeting Agenda")
     agenda = data.get("first_meeting_agenda", [])
     if agenda:
         for i, item in enumerate(agenda, 1):
-            st.markdown(f'<div style="display:flex;gap:1rem;margin-bottom:0.8rem;align-items:flex-start"><div style="background:var(--violet);color:var(--white);font-family:\'Playfair Display\',serif;font-weight:700;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.88rem">{i}</div><div style="font-size:0.93rem;color:var(--lgray);line-height:1.7;padding-top:4px">{item}</div></div>', unsafe_allow_html=True)
+            st.markdown(f"""
+            <div style="display:flex;gap:1rem;margin-bottom:0.8rem;align-items:flex-start">
+                <div style="background:var(--violet);color:var(--white);font-family:'Playfair Display',serif;font-weight:700;
+                    width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+                    flex-shrink:0;font-size:0.88rem">{i}</div>
+                <div style="font-size:0.93rem;color:var(--lgray);line-height:1.7;padding-top:4px">{item}</div>
+            </div>
+            """, unsafe_allow_html=True)
 
-    # Footer
+    # ── Footer ──
     st.markdown("<br>", unsafe_allow_html=True)
-    st.markdown('<div style="text-align:center;padding:1.5rem;border-top:1px solid var(--border);margin-top:2rem"><div style="font-family:\'Playfair Display\',serif;font-size:1rem;color:var(--gold);margin-bottom:0.3rem">Deal Intelligence Engine</div><div style="font-size:0.78rem;color:var(--gray)">Powered by Gemini AI &middot; B2B Strategy &amp; Market Intelligence</div></div>', unsafe_allow_html=True)
+    st.markdown(f"""
+    <div style="text-align:center;padding:1.5rem;border-top:1px solid var(--border);margin-top:2rem">
+        <div style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--gold);margin-bottom:0.3rem">DiamondCraft India · Surat</div>
+        <div style="font-size:0.78rem;color:var(--gray)">IGI Certified Lab-Grown Diamond Jewellery · partnerships@diamondcraftindia.com</div>
+    </div>
+    """, unsafe_allow_html=True)
+
 
 # ══════════════════════════════════════════════════════════════
 # MAIN APP
 # ══════════════════════════════════════════════════════════════
 
+# Session state
 if "analysis" not in st.session_state:
     st.session_state.analysis = None
 if "analysing" not in st.session_state:
     st.session_state.analysing = False
 
+# ── Upload section ────────────────────────────────────────────
 col_upload, col_info = st.columns([1.6, 1])
 
 with col_upload:
     st.markdown('<div class="card-label" style="margin-bottom:0.6rem">UPLOAD ANNUAL REPORT</div>', unsafe_allow_html=True)
-    uploaded = st.file_uploader("Drop the target company's annual report PDF here", type=["pdf"], label_visibility="collapsed")
-    target_hint = st.text_input("Target company name (optional — helps the AI orient faster)", placeholder="e.g. H&M, Snowflake, John Deere...", label_visibility="visible")
+    uploaded = st.file_uploader(
+        "Drop the retailer's annual report PDF here",
+        type=["pdf"],
+        label_visibility="collapsed"
+    )
+
+    retailer_hint = st.text_input(
+        "Retailer name (optional — helps the AI orient faster)",
+        placeholder="e.g. H&M, Zalando, John Lewis...",
+        label_visibility="visible"
+    )
 
     if uploaded:
         file_size_mb = uploaded.size / (1024*1024)
-        st.markdown(f'<div style="background:var(--deep);border:1px solid var(--border);border-radius:10px;padding:0.8rem 1.2rem;margin:0.5rem 0;display:flex;align-items:center;gap:0.8rem"><span style="font-size:1.2rem">&#128196;</span><div><div style="font-size:0.9rem;color:var(--white);font-weight:500">{uploaded.name}</div><div style="font-size:0.75rem;color:var(--gray)">{file_size_mb:.1f} MB &middot; PDF</div></div><span style="margin-left:auto;color:#66FFAA;font-size:0.8rem">&#10003; Ready</span></div>', unsafe_allow_html=True)
+        st.markdown(f"""
+        <div style="background:var(--deep);border:1px solid var(--border);border-radius:10px;
+            padding:0.8rem 1.2rem;margin:0.5rem 0;display:flex;align-items:center;gap:0.8rem">
+            <span style="font-size:1.2rem">📄</span>
+            <div>
+                <div style="font-size:0.9rem;color:var(--white);font-weight:500">{uploaded.name}</div>
+                <div style="font-size:0.75rem;color:var(--gray)">{file_size_mb:.1f} MB · PDF</div>
+            </div>
+            <span style="margin-left:auto;color:#66FFAA;font-size:0.8rem">✓ Ready</span>
+        </div>
+        """, unsafe_allow_html=True)
 
-        if not user_company or not user_product:
-            st.warning("&#9888; Please fill out your Company Name and Product in the left sidebar before analyzing.")
-        else:
-            if st.button("Generate Strategic Brief", type="primary"):
-                st.session_state.analysing = True
-                st.session_state.analysis = None
+        if st.button("💎 Analyse Annual Report", type="primary"):
+            st.session_state.analysing = True
+            st.session_state.analysis = None
 
 with col_info:
     st.markdown("""
     <div class="intel-card" style="--accent-color:#C8961E;height:fit-content">
         <div class="card-label">WHAT YOU GET</div>
-        <div class="card-title">12-Point Strategy Brief</div>
+        <div class="card-title">12-Point Deal Brief</div>
         <div class="card-body">
-            <div style="margin-bottom:0.5rem">&#10003; &nbsp;<strong>GO / CAUTION / AVOID</strong> verdict</div>
-            <div style="margin-bottom:0.5rem">&#10003; &nbsp;Product &amp; Category fit signals</div>
-            <div style="margin-bottom:0.5rem">&#10003; &nbsp;ESG alignment score</div>
-            <div style="margin-bottom:0.5rem">&#10003; &nbsp;Financial health &amp; risk check</div>
-            <div style="margin-bottom:0.5rem">&#10003; &nbsp;Target shopper profile match</div>
-            <div style="margin-bottom:0.5rem">&#10003; &nbsp;Custom outreach strategy &amp; opening line</div>
-            <div style="margin-bottom:0.5rem">&#10003; &nbsp;Hidden opportunities extracted from text</div>
-            <div style="margin-bottom:0.5rem">&#10003; &nbsp;Cautions &amp; specific red flags</div>
-            <div style="margin-bottom:0.5rem">&#10003; &nbsp;Your unique negotiation leverage</div>
-            <div style="margin-bottom:0.5rem">&#10003; &nbsp;What NOT to say to the buyer</div>
-            <div style="margin-bottom:0.5rem">&#10003; &nbsp;Recommended deal structure</div>
-            <div>&#10003; &nbsp;First meeting agenda</div>
+            <div style="margin-bottom:0.5rem">✓ &nbsp;<strong>GO / CAUTION / AVOID</strong> verdict</div>
+            <div style="margin-bottom:0.5rem">✓ &nbsp;Jewellery category signals</div>
+            <div style="margin-bottom:0.5rem">✓ &nbsp;ESG alignment score</div>
+            <div style="margin-bottom:0.5rem">✓ &nbsp;Financial health check</div>
+            <div style="margin-bottom:0.5rem">✓ &nbsp;Shopper profile match</div>
+            <div style="margin-bottom:0.5rem">✓ &nbsp;Approach strategy & opening line</div>
+            <div style="margin-bottom:0.5rem">✓ &nbsp;Opportunities from their own report</div>
+            <div style="margin-bottom:0.5rem">✓ &nbsp;Cautions & red flags</div>
+            <div style="margin-bottom:0.5rem">✓ &nbsp;Your negotiation leverage</div>
+            <div style="margin-bottom:0.5rem">✓ &nbsp;What NOT to say</div>
+            <div style="margin-bottom:0.5rem">✓ &nbsp;Recommended deal structure</div>
+            <div>✓ &nbsp;First meeting agenda</div>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
+# ── Analysis runner ───────────────────────────────────────────
 if st.session_state.analysing and uploaded is not None:
     st.markdown("<hr>", unsafe_allow_html=True)
+
     progress_container = st.empty()
     status_container   = st.empty()
 
     steps = [
         (0.10, "Reading the annual report..."),
-        (0.25, "Scanning for strategic &amp; category alignment..."),
-        (0.40, "Extracting ESG commitments &amp; priorities..."),
-        (0.55, "Analysing financial health &amp; risk flags..."),
-        (0.70, "Building custom approach strategy..."),
-        (0.85, "Identifying your negotiation leverage..."),
-        (0.95, "Compiling your strategic intelligence brief..."),
+        (0.25, "Scanning jewellery & accessories sections..."),
+        (0.40, "Extracting ESG commitments..."),
+        (0.55, "Analysing financial health & risk flags..."),
+        (0.70, "Building approach strategy..."),
+        (0.85, "Identifying negotiation leverage..."),
+        (0.95, "Compiling your deal intelligence brief..."),
     ]
 
     try:
-        gemini_file = upload_pdf_to_gemini(uploaded)
+       gemini_file = upload_pdf_to_gemini(uploaded)
+
         for pct, msg in steps:
             progress_container.progress(pct)
-            status_container.markdown(f"<p style='color:var(--lilac);font-size:0.9rem;text-align:center'>&#8635; &nbsp;{msg}</p>", unsafe_allow_html=True)
+            status_container.markdown(
+                f"<p style='color:var(--lilac);font-size:0.9rem;text-align:center'>⟳ &nbsp;{msg}</p>",
+                unsafe_allow_html=True
+            )
             time.sleep(0.4)
 
-        result = analyse_report(gemini_file, user_company, user_product, user_value_prop, analysis_goal, target_hint)
+        result = analyse_report(gemini_file, retailer_hint)
         st.session_state.analysis = result
         st.session_state.analysing = False
 
         progress_container.progress(1.0)
-        status_container.markdown("<p style='color:#66FFAA;font-size:0.9rem;text-align:center'>&#10003; &nbsp;Analysis complete</p>", unsafe_allow_html=True)
+        status_container.markdown(
+            "<p style='color:#66FFAA;font-size:0.9rem;text-align:center'>✓ &nbsp;Analysis complete</p>",
+            unsafe_allow_html=True
+        )
         time.sleep(0.8)
         progress_container.empty()
         status_container.empty()
         st.rerun()
 
+    except json.JSONDecodeError as e:
+        st.session_state.analysing = False
+        st.error(f"The AI returned an unexpected format. Please try again. ({e})")
     except Exception as e:
         st.session_state.analysing = False
         st.error(f"Analysis failed: {str(e)}")
 
+# ── Render result ─────────────────────────────────────────────
 if st.session_state.analysis:
     st.markdown("<hr>", unsafe_allow_html=True)
     render_brief(st.session_state.analysis)
+
+    # Download JSON
     st.markdown("<br>", unsafe_allow_html=True)
-    company_name = st.session_state.analysis.get("company_name", "target_company").replace(" ", "_")
+    company_name = st.session_state.analysis.get("company_name", "retailer").replace(" ", "_")
     st.download_button(
-        label="Download Full Brief as JSON",
+        label="⬇  Download Full Brief as JSON",
         data=json.dumps(st.session_state.analysis, indent=2),
-        file_name=f"Strategic_DealBrief_{company_name}.json",
+        file_name=f"DiamondCraft_DealBrief_{company_name}.json",
         mime="application/json",
         use_container_width=True
     )
 
+# ── Empty state ───────────────────────────────────────────────
 if not uploaded and not st.session_state.analysis:
     st.markdown("<hr>", unsafe_allow_html=True)
-    st.markdown("""<div style="text-align:center;padding:3rem 1rem;color:var(--gray)"><div style="font-size:3rem;margin-bottom:1rem">&#128203;</div><div style="font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--soft);margin-bottom:0.5rem">Upload an Annual Report to Begin</div><div style="font-size:0.9rem;line-height:1.7;max-width:480px;margin:0 auto">Works with any public company&#39;s annual report, sustainability report, or 10-K filing. Upload the PDF, configure your company profile on the left, and generate a complete strategic brief.</div></div>""", unsafe_allow_html=True)
+    st.markdown("""
+    <div style="text-align:center;padding:3rem 1rem;color:var(--gray)">
+        <div style="font-size:3rem;margin-bottom:1rem">📋</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--soft);margin-bottom:0.5rem">
+            Drop in any retailer's annual report
+        </div>
+        <div style="font-size:0.9rem;line-height:1.7;max-width:480px;margin:0 auto">
+            Works with H&M, Zalando, John Lewis, El Corte Inglés, Otto, Inditex —
+            or any retailer you are evaluating. Upload the PDF and get a complete
+            deal intelligence brief in under 60 seconds.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
