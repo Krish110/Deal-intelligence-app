@@ -837,7 +837,7 @@ if st.session_state.analysing and uploaded is not None:
         (0.95, "Compiling your deal intelligence brief..."),
     ]
 
- try:
+    try:
         gemini_file = upload_pdf_to_gemini(uploaded)
 
         for pct, msg in steps:
