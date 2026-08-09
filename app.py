@@ -347,7 +347,7 @@ hr { border-color: var(--border) !important; margin: 2rem 0 !important; }
 # ── Hero ──────────────────────────────────────────────────────
 st.markdown("""
 <div class="hero">
-    <div class="hero-eyebrow">💎 Inter Gold India Pvt Ldt. · Mumbai · Certified Lab-Grown Diamonds</div>
+    <div class="hero-eyebrow">💎 Inter Gold India Pvt Ltd. · Mumbai · Certified Lab-Grown Diamonds</div>
     <div class="hero-title">Deal Intelligence Engine</div>
     <div class="hero-sub">
         Upload any retailer's annual report. Get a complete strategic brief —
@@ -448,9 +448,9 @@ Return a valid JSON object with exactly this structure. No text before or after 
   "first_meeting_agenda": ["array of 4-5 agenda points for the first buyer meeting, specific to this retailer"]
 }"""
 
-# ── Helper: PDF to base64 ─────────────────────────────────────
+# ── Helper: PDF Upload ────────────────────────────────────────
 def upload_pdf_to_gemini(uploaded_file):
-    """Upload PDF bytes to Gemini Files API and return the file object."""
+    """Upload PDF bytes to Gemini Files API using google-genai client."""
     client = genai.Client(api_key=st.secrets["GOOGLE_API_KEY"])
     
     uploaded_file.seek(0)
@@ -461,7 +461,10 @@ def upload_pdf_to_gemini(uploaded_file):
     with open(tmp_path, "wb") as f:
         f.write(pdf_bytes)
         
-    gemini_file = client.files.upload(file=tmp_path, mime_type="application/pdf")
+    gemini_file = client.files.upload(
+        file=tmp_path, 
+        config={'mime_type': 'application/pdf'}
+    )
     return gemini_file
 
 # ── Helper: Call Gemini ───────────────────────────────────────
