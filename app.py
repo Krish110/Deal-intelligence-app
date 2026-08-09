@@ -321,7 +321,7 @@ hr { border-color: var(--border) !important; margin: 2rem 0 !important; }
 # ── Hero ──────────────────────────────────────────────────────
 st.markdown("""
 <div class="hero">
-    <div class="hero-eyebrow">💎 Inter Gold India Pvt Ltd. · Mumbai · Certified Lab-Grown Diamonds</div>
+    <div class="hero-eyebrow">💎 Inter Gold · Mumbai · Certified Lab-Grown Diamonds</div>
     <div class="hero-title">Deal Intelligence Engine</div>
     <div class="hero-sub">
         Upload any retailer's annual report. Get a complete strategic brief —
@@ -331,12 +331,12 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ── System prompt ─────────────────────────────────────────────
-SYSTEM_PROMPT = """You are a senior B2B sales strategist and market intelligence analyst for DiamondCraft India — a Surat-based manufacturer of IGI-certified lab-grown diamond (LGD) jewellery. 
+SYSTEM_PROMPT = """You are a senior B2B sales strategist and market intelligence analyst for Inter Gold — a Mumbai-based manufacturer of IGI-certified lab-grown diamond (LGD) jewellery. 
 
 YOUR COMPANY:
-- Inter Gold India, (world's diamond manufacturing capital)
+- Inter Gold, based in Mumbai
 - Products: IGI/GIA certified lab-grown diamond jewellery — solitaire studs, pendants, rings, tennis bracelets, bridal sets
-- Positioning: Real certified diamonds at 60-80% lower cost than mined, solar-powered CVD facility, full traceability
+- Positioning: Real certified diamonds at 60-80% lower cost than mined, state-of-the-art facility, full traceability
 - Target price range: €30–€1,000 wholesale depending on format
 - Delivery: DDP (Delivered Duty Paid) to Europe, UK, Australia
 - Capabilities: White-label manufacturing, own brand, bulk supply
@@ -344,7 +344,7 @@ YOUR COMPANY:
 - Key advantage: India-Australia ECTA (0% duty), UK-India FTA (imminent), EU-India FTA (pending)
 
 YOUR TASK:
-Analyse the extracted text from an annual report from a retailer's perspective and produce a structured deal intelligence brief. You must extract signals specifically relevant to whether this retailer should stock lab-grown diamond jewellery from DiamondCraft India.
+Analyse the extracted text from an annual report from a retailer's perspective and produce a structured deal intelligence brief. You must extract signals specifically relevant to whether this retailer should stock lab-grown diamond jewellery from Inter Gold.
 
 Look for:
 1. Jewellery/accessories category mentions — size, growth, strategy
@@ -541,7 +541,7 @@ def render_brief(data: dict):
     year    = data.get("report_year", "")
 
     st.markdown(f"<h2 style='font-family:Playfair Display,serif;color:var(--lgold);margin-bottom:0.2rem'>{company} · {year}</h2>", unsafe_allow_html=True)
-    st.markdown(f"<p style='color:var(--gray);font-size:0.85rem;margin-bottom:1.5rem'>Annual Report Intelligence Brief · DiamondCraft LGD Deal Analysis</p>", unsafe_allow_html=True)
+    st.markdown(f"<p style='color:var(--gray);font-size:0.85rem;margin-bottom:1.5rem'>Annual Report Intelligence Brief · Inter Gold LGD Deal Analysis</p>", unsafe_allow_html=True)
 
     # ── 1. VERDICT ──
     section("01 · Deal Verdict")
@@ -727,8 +727,8 @@ def render_brief(data: dict):
     st.markdown("<br>", unsafe_allow_html=True)
     st.markdown(f"""
     <div style="text-align:center;padding:1.5rem;border-top:1px solid var(--border);margin-top:2rem">
-        <div style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--gold);margin-bottom:0.3rem">DiamondCraft India · Surat</div>
-        <div style="font-size:0.78rem;color:var(--gray)">IGI Certified Lab-Grown Diamond Jewellery · partnerships@diamondcraftindia.com</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--gold);margin-bottom:0.3rem">Inter Gold · Mumbai</div>
+        <div style="font-size:0.78rem;color:var(--gray)">IGI Certified Lab-Grown Diamond Jewellery · partnerships@intergold.com</div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -868,7 +868,7 @@ if st.session_state.analysis:
     st.download_button(
         label="⬇  Download Full Brief as JSON",
         data=json.dumps(st.session_state.analysis, indent=2),
-        file_name=f"DiamondCraft_DealBrief_{company_name}.json",
+        file_name=f"InterGold_DealBrief_{company_name}.json",
         mime="application/json",
         use_container_width=True
     )
