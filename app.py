@@ -439,8 +439,8 @@ def analyse_report(pdf_text: str, retailer_hint: str = "") -> dict:
     client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 
     # Groq Free Tier limits this model to 12,000 tokens (~48,000 chars).
-    # Truncating to 35,000 characters to leave room for the prompt and JSON output.
-    truncated_text = pdf_text[:35000]
+    # Truncating to 25,000 characters to safely leave room for the prompt and JSON output limit.
+    truncated_text = pdf_text[:25000]
 
     user_prompt = f"""Analyse the following annual report text and return the JSON intelligence brief.
 {f'Retailer context hint: {retailer_hint}' if retailer_hint else ''}
@@ -457,7 +457,7 @@ Remember: return ONLY valid JSON, no text before or after.
             {"role": "user", "content": user_prompt}
         ],
         temperature=0.2,
-        max_tokens=4000
+        max_tokens=2000
     )
 
     raw = response.choices[0].message.content.strip()
