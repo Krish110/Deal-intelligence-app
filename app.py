@@ -477,7 +477,7 @@ def analyse_report(gemini_file, retailer_hint: str = "") -> dict:
 Remember: return ONLY valid JSON, no text before or after."""
 
     response = client.models.generate_content(
-        model="gemini-2.0-flash",  # ⬅️ Update this line
+        model="gemini-2.5-pro",  # ⬅️ Update this line
         contents=[gemini_file, user_prompt],
         config=types.GenerateContentConfig(
             system_instruction=SYSTEM_PROMPT,
