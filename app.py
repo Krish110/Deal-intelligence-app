@@ -1,5 +1,6 @@
 import streamlit as st
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 import os
 import json
 import time
@@ -450,33 +451,33 @@ Return a valid JSON object with exactly this structure. No text before or after 
 # ── Helper: PDF to base64 ─────────────────────────────────────
 def upload_pdf_to_gemini(uploaded_file):
     """Upload PDF bytes to Gemini Files API and return the file object."""
-    genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
+    client = genai.Client(api_key=st.secrets["GOOGLE_API_KEY"])
+    
     uploaded_file.seek(0)
     pdf_bytes = uploaded_file.read()
+    
     # Write to a temp file — Gemini Files API needs a file path
     tmp_path = f"/tmp/{uploaded_file.name}"
     with open(tmp_path, "wb") as f:
         f.write(pdf_bytes)
-    gemini_file = genai.upload_file(tmp_path, mime_type="application/pdf")
+        
+    gemini_file = client.files.upload(file=tmp_path, mime_type="application/pdf")
     return gemini_file
 
-# ── Helper: Call Claude ───────────────────────────────────────
+# ── Helper: Call Gemini ───────────────────────────────────────
 def analyse_report(gemini_file, retailer_hint: str = "") -> dict:
     """Send uploaded PDF file + prompt to Gemini and parse JSON response."""
-    genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
-
-    model = genai.GenerativeModel(
-        model_name="gemini-1.5-pro",
-        system_instruction=SYSTEM_PROMPT
-    )
+    client = genai.Client(api_key=st.secrets["GOOGLE_API_KEY"])
 
     user_prompt = f"""Analyse this annual report and return the JSON intelligence brief.
 {f'Retailer context hint: {retailer_hint}' if retailer_hint else ''}
 Remember: return ONLY valid JSON, no text before or after."""
 
-    response = model.generate_content(
-        [gemini_file, user_prompt],
-        generation_config=genai.GenerationConfig(
+    response = client.models.generate_content(
+        model="gemini-1.5-pro",
+        contents=[gemini_file, user_prompt],
+        config=types.GenerateContentConfig(
+            system_instruction=SYSTEM_PROMPT,
             max_output_tokens=4000,
             temperature=0.2
         )
