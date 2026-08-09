@@ -477,7 +477,7 @@ def analyse_report(gemini_file, retailer_hint: str = "") -> dict:
 Remember: return ONLY valid JSON, no text before or after."""
 
     response = client.models.generate_content(
-        model="gemini-2.5-pro",  # ⬅️ Update this line
+        model="gemini-2.0-flash",  # ⬅️ Change to the free-tier Flash model
         contents=[gemini_file, user_prompt],
         config=types.GenerateContentConfig(
             system_instruction=SYSTEM_PROMPT,
@@ -485,15 +485,6 @@ Remember: return ONLY valid JSON, no text before or after."""
             temperature=0.2
         )
     )
-
-    raw = response.text.strip()
-    # Strip markdown fences if Gemini wraps in ```json ... ```
-    if raw.startswith("```"):
-        raw = raw.split("```")[1]
-        if raw.startswith("json"):
-            raw = raw[4:]
-    raw = raw.strip().rstrip("```").strip()
-    return json.loads(raw)
 
 # ── Helper: Render verdict ────────────────────────────────────
 def render_verdict(data: dict):
