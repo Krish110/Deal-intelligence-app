@@ -1,6 +1,6 @@
 import streamlit as st
-from google import genai
-from google.genai import types
+from groq import Groq
+import pdfplumber
 import os
 import json
 import time
@@ -212,32 +212,6 @@ html, body, [class*="css"] {
     margin: 2rem 0 1.2rem 0;
 }
 
-/* ── Approach steps ── */
-.step-block {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
-    align-items: flex-start;
-}
-.step-num {
-    background: var(--violet);
-    color: var(--white);
-    font-family: 'Playfair Display', serif;
-    font-size: 1rem;
-    font-weight: 700;
-    width: 32px; height: 32px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    margin-top: 2px;
-}
-.step-text {
-    font-size: 0.93rem;
-    color: var(--lgray);
-    line-height: 1.7;
-}
-.step-head { font-weight: 600; color: var(--white); }
-
 /* ── Warning pills ── */
 .pill-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.6rem 0; }
 .pill {
@@ -370,7 +344,7 @@ YOUR COMPANY:
 - Key advantage: India-Australia ECTA (0% duty), UK-India FTA (imminent), EU-India FTA (pending)
 
 YOUR TASK:
-Analyse the uploaded annual report from a retailer's perspective and produce a structured deal intelligence brief. You must extract signals specifically relevant to whether this retailer should stock lab-grown diamond jewellery from DiamondCraft India.
+Analyse the extracted text from an annual report from a retailer's perspective and produce a structured deal intelligence brief. You must extract signals specifically relevant to whether this retailer should stock lab-grown diamond jewellery from DiamondCraft India.
 
 Look for:
 1. Jewellery/accessories category mentions — size, growth, strategy
@@ -448,43 +422,53 @@ Return a valid JSON object with exactly this structure. No text before or after 
   "first_meeting_agenda": ["array of 4-5 agenda points for the first buyer meeting, specific to this retailer"]
 }"""
 
-# ── Helper: PDF Upload ────────────────────────────────────────
-def upload_pdf_to_gemini(uploaded_file):
-    """Upload PDF bytes to Gemini Files API using google-genai client."""
-    client = genai.Client(api_key=st.secrets["GOOGLE_API_KEY"])
-    
-    uploaded_file.seek(0)
-    pdf_bytes = uploaded_file.read()
-    
-    # Write to a temp file — Gemini Files API needs a file path
-    tmp_path = f"/tmp/{uploaded_file.name}"
-    with open(tmp_path, "wb") as f:
-        f.write(pdf_bytes)
-        
-    gemini_file = client.files.upload(
-        file=tmp_path, 
-        config={'mime_type': 'application/pdf'}
-    )
-    return gemini_file
+# ── Helper: Extract text via PDFPlumber ───────────────────────
+def extract_pdf_text(uploaded_file):
+    """Extract text and tables from the PDF document locally."""
+    text_data = ""
+    with pdfplumber.open(uploaded_file) as pdf:
+        for page in pdf.pages:
+            extracted = page.extract_text()
+            if extracted:
+                text_data += extracted + "\n"
+    return text_data
 
-# ── Helper: Call Gemini ───────────────────────────────────────
-def analyse_report(gemini_file, retailer_hint: str = "") -> dict:
-    """Send uploaded PDF file + prompt to Gemini and parse JSON response."""
-    client = genai.Client(api_key=st.secrets["GOOGLE_API_KEY"])
+# ── Helper: Call Groq ─────────────────────────────────────────
+def analyse_report(pdf_text: str, retailer_hint: str = "") -> dict:
+    """Send extracted text + prompt to Groq API and parse JSON response."""
+    client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 
-    user_prompt = f"""Analyse this annual report and return the JSON intelligence brief.
+    # Truncating at ~80,000 characters to safely fit within Groq's LLaMA 3.3 context window
+    truncated_text = pdf_text[:80000]
+
+    user_prompt = f"""Analyse the following annual report text and return the JSON intelligence brief.
 {f'Retailer context hint: {retailer_hint}' if retailer_hint else ''}
-Remember: return ONLY valid JSON, no text before or after."""
+Remember: return ONLY valid JSON, no text before or after.
 
-    response = client.models.generate_content(
-        model="gemini-2.0-flash",  # ⬅️ Change to the free-tier Flash model
-        contents=[gemini_file, user_prompt],
-        config=types.GenerateContentConfig(
-            system_instruction=SYSTEM_PROMPT,
-            max_output_tokens=4000,
-            temperature=0.2
-        )
+--- ANNUAL REPORT TEXT ---
+{truncated_text}
+"""
+
+    response = client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        messages=[
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": user_prompt}
+        ],
+        temperature=0.2,
+        max_tokens=4000
     )
+
+    raw = response.choices[0].message.content.strip()
+    
+    # Strip markdown fences if Groq wraps in ```json ... ```
+    if raw.startswith("```"):
+        raw = raw.split("```")[1]
+        if raw.startswith("json"):
+            raw = raw[4:]
+    raw = raw.strip().rstrip("```").strip()
+    
+    return json.loads(raw)
 
 # ── Helper: Render verdict ────────────────────────────────────
 def render_verdict(data: dict):
@@ -747,7 +731,6 @@ def render_brief(data: dict):
     </div>
     """, unsafe_allow_html=True)
 
-
 # ══════════════════════════════════════════════════════════════
 # MAIN APP
 # ══════════════════════════════════════════════════════════════
@@ -823,19 +806,26 @@ if st.session_state.analysing and uploaded is not None:
     status_container   = st.empty()
 
     steps = [
-        (0.10, "Reading the annual report..."),
-        (0.25, "Scanning jewellery & accessories sections..."),
-        (0.40, "Extracting ESG commitments..."),
-        (0.55, "Analysing financial health & risk flags..."),
-        (0.70, "Building approach strategy..."),
-        (0.85, "Identifying negotiation leverage..."),
+        (0.10, "Extracting text and tables with pdfplumber..."),
+        (0.30, "Connecting to Groq LLaMA-3.3 engine..."),
+        (0.45, "Scanning jewellery & accessories sections..."),
+        (0.60, "Analysing financial health & ESG data..."),
+        (0.75, "Building approach strategy & leverage..."),
         (0.95, "Compiling your deal intelligence brief..."),
     ]
 
     try:
-        gemini_file = upload_pdf_to_gemini(uploaded)
+        # Step 1: Plumb the PDF locally
+        progress_container.progress(0.10)
+        status_container.markdown(
+            "<p style='color:var(--lilac);font-size:0.9rem;text-align:center'>⟳ &nbsp;Extracting text and tables with pdfplumber...</p>",
+            unsafe_allow_html=True
+        )
+        
+        pdf_text = extract_pdf_text(uploaded)
 
-        for pct, msg in steps:
+        # Step 2: Push through the rest of the progress steps
+        for pct, msg in steps[1:]:
             progress_container.progress(pct)
             status_container.markdown(
                 f"<p style='color:var(--lilac);font-size:0.9rem;text-align:center'>⟳ &nbsp;{msg}</p>",
@@ -843,7 +833,9 @@ if st.session_state.analysing and uploaded is not None:
             )
             time.sleep(0.4)
 
-        result = analyse_report(gemini_file, retailer_hint)
+        # Step 3: Run the Groq analysis
+        result = analyse_report(pdf_text, retailer_hint)
+        
         st.session_state.analysis = result
         st.session_state.analysing = False
 
